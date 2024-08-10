@@ -2,6 +2,10 @@ package com.github.polyrocketmatt.cyclone.api;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 /**
  * Represents a buffer of elements whose values can be accessed and modified
  * using hardware-accelerated operations through TornadoVM.
@@ -42,5 +46,15 @@ public interface CycloneBuffer<T> {
      * @throws IndexOutOfBoundsException If the index is out of bounds.
      */
     void set(int index, @NotNull T value) throws IndexOutOfBoundsException;
+    
+    @NotNull CycloneBuffer<T> filter(Predicate<T> predicate);
+
+    @NotNull CycloneBuffer<T> map(Function<T, T> mapper);
+
+    @NotNull CycloneBuffer<T> mapIndexed(BiFunction<Integer, T, T> mapper);
+
+    @NotNull CycloneBuffer<T> zipWith(CycloneBuffer<T> other, BiFunction<T, T, T> zipper);
+
+    @NotNull CycloneBuffer<T> zipWithIndex(BiFunction<T, Integer, T> zipper);
 
 }
