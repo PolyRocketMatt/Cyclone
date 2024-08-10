@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+group = 'com.github.polyrocketmatt.cyclone'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+
+    // TornadoVM repository
+    maven {
+        url 'https://raw.githubusercontent.com/beehive-lab/tornado/maven-tornadovm'
+    }
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    implementation 'org.jetbrains:annotations:24.0.0'
+
+    // TornadoVM dependencies
+    implementation 'tornado:tornado-api:1.0.6'
+
+    // Cyclone dependencies
+    implementation project(':cyclone-api')
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.named('jar') {
+    manifest {
+        attributes(
+                'Implementation-Title': project.name,
+                'Implementation-Version': project.version
+        )
+    }
+}
+
+tasks.named('shadowJar') {
+    manifest {
+        attributes(
+                'API-Title': project.name,
+                'API-Version': project.version
+        )
+    }
+}
