@@ -10,6 +10,36 @@
     </picture>
 </p>
 
-# Peak
+<h1 align="center">Cyclone</h1>
 
-Peak is a **signal processing library** that aims to allow processing and/or construction of signals.
+**Cyclone** is a library that aims at using hardware acceleration to perform operations on multidimensional
+arrays. Through the use of [TornadoVM](https://www.tornadovm.org/), Cyclone is able to offload operations
+onto hardware specialized in parallel computation (e.g. GPUs). It is designed to be an easy-to-use, all-in-one
+library for operations that are embarrassingly parallel.
+
+## Installation
+
+Currently, Cyclone is still very much a WIP. The following steps can be followed to build and run the
+library:
+
+```shell
+git clone https://github.com/PolyRocketMatt/Cyclone.git
+cd Cyclone
+./gradlew build
+```
+
+Please note that since this library makes use of TornadoVM, it is necessary to have its SDK installed.
+A guide on how to do this can be found [here](https://tornadovm.readthedocs.io/en/latest/installation.html).
+
+## Features
+
+Cyclone is still in early development. The following features are planned for the library:
+
+- [ ] Arithmetic operations on n-d arrays
+- [ ] Utility functions for n-d arrays
+- [ ] ... more to be announced later
+
+---
+Icons made by [Freepik](https://www.freepik.com) from [Flaticon](https://www.flaticon.com/)
+
+---
