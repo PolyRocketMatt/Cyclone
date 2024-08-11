@@ -14,9 +14,9 @@
 
 **Cyclone** is a library that aims at using hardware acceleration to perform operations on multidimensional
 arrays. Through the use of [TornadoVM](https://www.tornadovm.org/), Cyclone is able to offload operations
-onto hardware specialized in parallel computation (e.g. GPUs). It is designed to be an all-in-one
-library for operations that are embarrassingly parallel, allowing fields such as machine learning, computer
-vision and scientific computing to benefit from the expansive Java ecosystem.
+onto hardware specialized in parallel computation (e.g. GPUs). In essence, this library offers a wide
+variety of wrappers for computation kernels for common operations on n-dimensional arrays. This allows
+developers to write high-performance code in Java, while still benefiting from the expansive Java ecosystem.
 
 ## Installation
 
