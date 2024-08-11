@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'maven-publish'
 }
 
 group = 'com.github.polyrocketmatt.cyclone'
@@ -35,6 +35,22 @@ test {
     useJUnitPlatform()
 }
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            groupId = 'com.github.polyrocketmatt.cyclone'
+            artifactId = 'cyclone-impl'
+            version = '1.0-SNAPSHOT'
+        }
+    }
+
+    repositories {
+        mavenLocal()
+    }
+}
+
 tasks.withType(JavaCompile) {
     options.compilerArgs += ["--enable-preview"]
     options.compilerArgs += ["-Xlint:preview"]
@@ -45,15 +61,6 @@ tasks.named('jar') {
         attributes(
                 'Implementation-Title': project.name,
                 'Implementation-Version': project.version
-        )
-    }
-}
-
-tasks.named('shadowJar') {
-    manifest {
-        attributes(
-                'API-Title': project.name,
-                'API-Version': project.version
         )
     }
 }
