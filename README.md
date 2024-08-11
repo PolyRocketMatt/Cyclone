@@ -26,7 +26,7 @@ library:
 ```shell
 git clone https://github.com/PolyRocketMatt/Cyclone.git
 cd Cyclone
-./gradlew build
+./gradlew clean build publishToMavenLocal
 ```
 
 Please note that since this library makes use of TornadoVM, it is necessary to have its SDK installed.
