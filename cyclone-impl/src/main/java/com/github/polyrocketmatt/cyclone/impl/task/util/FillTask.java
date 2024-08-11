@@ -16,7 +16,8 @@ import uk.ac.manchester.tornado.api.types.arrays.FloatArray;
 public class FillTask implements FunctionalTask {
 
     @Override
-    public @NotNull CycloneBuffer<Float> execute(@NotNull CycloneBuffer<Float> buffer, @NotNull FloatArray output, float value, int size) {
+    public @NotNull CycloneBuffer<Float> execute(@NotNull CycloneBuffer<Float> buffer, @NotNull FloatArray output,
+                                                 float value, int size) {
         if (!(buffer.asNativeArray() instanceof FloatArray input))
             throw new CycloneException("Buffer type does not match native array type!");
 

@@ -16,14 +16,16 @@ import uk.ac.manchester.tornado.api.types.arrays.FloatArray;
 public class DivisionTask implements ArithmeticTask {
 
     @Override
-    public @NotNull CycloneBuffer<Float> execute(@NotNull CycloneBuffer<Float> buffer, @NotNull FloatArray output, float value, int size) {
+    public @NotNull CycloneBuffer<Float> execute(@NotNull CycloneBuffer<Float> buffer, @NotNull FloatArray output,
+                                                 float value, int size) {
         FloatArray values = new FloatArray(size);
         values.init(value);
         return execute(buffer, output, values, size);
     }
 
     @Override
-    public @NotNull CycloneBuffer<Float> execute(@NotNull CycloneBuffer<Float> buffer, @NotNull FloatArray output, @NotNull FloatArray values, int size) {
+    public @NotNull CycloneBuffer<Float> execute(@NotNull CycloneBuffer<Float> buffer, @NotNull FloatArray output,
+                                                 @NotNull FloatArray values, int size) {
         if (!(buffer.asNativeArray() instanceof FloatArray input))
             throw new CycloneException("Buffer type does not match native array type!");
         for (int i = 0; i < size; i++)
