@@ -1,11 +1,11 @@
 package com.github.polyrocketmatt.cyclone.impl.buffer;
 
-import com.github.polyrocketmatt.cyclone.api.buffer.ArithmeticBuffer;
+import com.github.polyrocketmatt.cyclone.api.buffer.ops.AggregationBufferOps;
+import com.github.polyrocketmatt.cyclone.api.buffer.ops.ArithmeticBufferOps;
 import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
-import com.github.polyrocketmatt.cyclone.api.buffer.LinAlgBuffer;
-import com.github.polyrocketmatt.cyclone.api.buffer.NoiseBuffer;
 import com.github.polyrocketmatt.cyclone.api.function.TriFunction;
 import com.github.polyrocketmatt.cyclone.impl.exception.CycloneException;
+import com.github.polyrocketmatt.cyclone.impl.task.aggregate.SumTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.AdditionTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.DivisionTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.MultiplicationTask;
@@ -20,7 +20,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
-        ArithmeticBuffer<Float>, NoiseBuffer<Float>, LinAlgBuffer<Float> {
+        AggregationBufferOps<Float>, ArithmeticBufferOps<Float> {
 
     protected final int size;
     protected final FloatArray nativeBuffer;
@@ -97,56 +97,56 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
     }
 
     @Override
-    public @NotNull ArithmeticBuffer<Float> add(@NotNull CycloneBuffer<Float> other) {
-        return (ArithmeticBuffer<Float>) new AdditionTask().execute(this, tmpBuffer,
+    public @NotNull Float sum() {
+        return new SumTask().execute(this, tmpBuffer, size);
+    }
+
+    @Override
+    public @NotNull ArithmeticBufferOps<Float> add(@NotNull CycloneBuffer<Float> other) {
+        return (ArithmeticBufferOps<Float>) new AdditionTask().execute(this, tmpBuffer,
                 checkBufferArgument(other).nativeBuffer, size);
     }
 
     @Override
-    public @NotNull ArithmeticBuffer<Float> add(@NotNull Float value) {
-        return (ArithmeticBuffer<Float>) new AdditionTask().execute(this, tmpBuffer,
+    public @NotNull ArithmeticBufferOps<Float> add(@NotNull Float value) {
+        return (ArithmeticBufferOps<Float>) new AdditionTask().execute(this, tmpBuffer,
                 value, size);
     }
 
     @Override
-    public @NotNull ArithmeticBuffer<Float> sub(@NotNull CycloneBuffer<Float> other) {
-        return (ArithmeticBuffer<Float>) new SubtractionTask().execute(this, tmpBuffer,
+    public @NotNull ArithmeticBufferOps<Float> sub(@NotNull CycloneBuffer<Float> other) {
+        return (ArithmeticBufferOps<Float>) new SubtractionTask().execute(this, tmpBuffer,
                 checkBufferArgument(other).nativeBuffer, size);
     }
 
     @Override
-    public @NotNull ArithmeticBuffer<Float> sub(@NotNull Float value) {
-        return (ArithmeticBuffer<Float>) new SubtractionTask().execute(this, tmpBuffer,
+    public @NotNull ArithmeticBufferOps<Float> sub(@NotNull Float value) {
+        return (ArithmeticBufferOps<Float>) new SubtractionTask().execute(this, tmpBuffer,
                 value, size);
     }
 
     @Override
-    public @NotNull ArithmeticBuffer<Float> mul(@NotNull CycloneBuffer<Float> other) {
-        return (ArithmeticBuffer<Float>) new MultiplicationTask().execute(this, tmpBuffer,
+    public @NotNull ArithmeticBufferOps<Float> mul(@NotNull CycloneBuffer<Float> other) {
+        return (ArithmeticBufferOps<Float>) new MultiplicationTask().execute(this, tmpBuffer,
                 checkBufferArgument(other).nativeBuffer, size);
     }
 
     @Override
-    public @NotNull ArithmeticBuffer<Float> mul(@NotNull Float value) {
-        return (ArithmeticBuffer<Float>) new MultiplicationTask().execute(this, tmpBuffer,
+    public @NotNull ArithmeticBufferOps<Float> mul(@NotNull Float value) {
+        return (ArithmeticBufferOps<Float>) new MultiplicationTask().execute(this, tmpBuffer,
                 value, size);
     }
 
     @Override
-    public @NotNull ArithmeticBuffer<Float> div(@NotNull CycloneBuffer<Float> other) {
-        return (ArithmeticBuffer<Float>) new DivisionTask().execute(this, tmpBuffer,
+    public @NotNull ArithmeticBufferOps<Float> div(@NotNull CycloneBuffer<Float> other) {
+        return (ArithmeticBufferOps<Float>) new DivisionTask().execute(this, tmpBuffer,
                 checkBufferArgument(other).nativeBuffer, size);
     }
 
     @Override
-    public @NotNull ArithmeticBuffer<Float> div(@NotNull Float value) {
-        return (ArithmeticBuffer<Float>) new DivisionTask().execute(this, tmpBuffer,
+    public @NotNull ArithmeticBufferOps<Float> div(@NotNull Float value) {
+        return (ArithmeticBufferOps<Float>) new DivisionTask().execute(this, tmpBuffer,
                 value, size);
-    }
-
-    @Override
-    public @NotNull NoiseBuffer<Float> test() {
-        return null;
     }
 
 }

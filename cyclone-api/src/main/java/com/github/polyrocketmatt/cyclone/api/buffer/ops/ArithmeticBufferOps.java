@@ -1,5 +1,6 @@
-package com.github.polyrocketmatt.cyclone.api.buffer;
+package com.github.polyrocketmatt.cyclone.api.buffer.ops;
 
+import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * @version 0.0.1
  * @author Matthias Kovacic
  */
-public interface ArithmeticBuffer<T> extends CycloneBuffer<T> {
+public interface ArithmeticBufferOps<T> extends CycloneBuffer<T> {
 
     /**
      * Adds the elements of this buffer with the elements of another buffer.
@@ -19,7 +20,7 @@ public interface ArithmeticBuffer<T> extends CycloneBuffer<T> {
      * @param other The other buffer to add.
      * @return The result of adding the elements of this buffer with the elements of the other buffer.
      */
-    @NotNull ArithmeticBuffer<T> add(@NotNull CycloneBuffer<T> other);
+    @NotNull ArithmeticBufferOps<T> add(@NotNull CycloneBuffer<T> other);
 
     /**
      * Adds the elements of this buffer with a value.
@@ -27,7 +28,7 @@ public interface ArithmeticBuffer<T> extends CycloneBuffer<T> {
      * @param value The value to add.
      * @return The result of adding the elements of this buffer with the value.
      */
-    @NotNull ArithmeticBuffer<T> add(@NotNull T value);
+    @NotNull ArithmeticBufferOps<T> add(@NotNull T value);
 
     /**
      * Subtracts the elements of this buffer with the elements of another buffer.
@@ -35,7 +36,7 @@ public interface ArithmeticBuffer<T> extends CycloneBuffer<T> {
      * @param other The other buffer to subtract.
      * @return The result of subtracting the elements of this buffer with the elements of the other buffer.
      */
-    @NotNull ArithmeticBuffer<T> sub(@NotNull CycloneBuffer<T> other);
+    @NotNull ArithmeticBufferOps<T> sub(@NotNull CycloneBuffer<T> other);
 
     /**
      * Subtracts the elements of this buffer with a value.
@@ -43,7 +44,7 @@ public interface ArithmeticBuffer<T> extends CycloneBuffer<T> {
      * @param value The value to subtract.
      * @return The result of subtracting the elements of this buffer with the value.
      */
-    @NotNull ArithmeticBuffer<T> sub(@NotNull T value);
+    @NotNull ArithmeticBufferOps<T> sub(@NotNull T value);
 
     /**
      * Multiplies the elements of this buffer with the elements of another buffer.
@@ -51,7 +52,7 @@ public interface ArithmeticBuffer<T> extends CycloneBuffer<T> {
      * @param other The other buffer to multiply.
      * @return The result of multiplying the elements of this buffer with the elements of the other buffer.
      */
-    @NotNull ArithmeticBuffer<T> mul(@NotNull CycloneBuffer<T> other);
+    @NotNull ArithmeticBufferOps<T> mul(@NotNull CycloneBuffer<T> other);
 
     /**
      * Multiplies the elements of this buffer with a value.
@@ -59,7 +60,7 @@ public interface ArithmeticBuffer<T> extends CycloneBuffer<T> {
      * @param value The value to multiply.
      * @return The result of multiplying the elements of this buffer with the value.
      */
-    @NotNull ArithmeticBuffer<T> mul(@NotNull T value);
+    @NotNull ArithmeticBufferOps<T> mul(@NotNull T value);
 
     /**
      * Divides the elements of this buffer with the elements of another buffer.
@@ -67,7 +68,7 @@ public interface ArithmeticBuffer<T> extends CycloneBuffer<T> {
      * @param other The other buffer to divide.
      * @return The result of dividing the elements of this buffer with the elements of the other buffer.
      */
-    @NotNull ArithmeticBuffer<T> div(@NotNull CycloneBuffer<T> other);
+    @NotNull ArithmeticBufferOps<T> div(@NotNull CycloneBuffer<T> other);
 
     /**
      * Divides the elements of this buffer with a value.
@@ -75,6 +76,6 @@ public interface ArithmeticBuffer<T> extends CycloneBuffer<T> {
      * @param value The value to divide.
      * @return The result of dividing the elements of this buffer with the value.
      */
-    @NotNull ArithmeticBuffer<T> div(@NotNull T value);
+    @NotNull ArithmeticBufferOps<T> div(@NotNull T value);
 
 }
