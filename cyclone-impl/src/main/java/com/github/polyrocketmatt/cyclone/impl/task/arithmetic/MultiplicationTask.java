@@ -36,9 +36,9 @@ public class MultiplicationTask implements ArithmeticTask {
         ImmutableTaskGraph itg = graph.snapshot();
 
         try (TornadoExecutionPlan plan = new TornadoExecutionPlan(itg)) {
-            TornadoExecutionResult result = plan.execute();
+            TornadoExecutionResult executionResult = plan.execute();
 
-            if (result.isReady()) {
+            if (executionResult.isReady()) {
                 for (int i = 0; i < size; i++)
                     buffer.set(i, output.get(i));
             }

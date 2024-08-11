@@ -16,12 +16,12 @@ public interface FunctionalTask {
     /**
      * Execute a functional task on a float-based buffer.
      *
-     * @param input The buffer to execute the functional task on.
+     * @param buffer The buffer to execute the functional task on.
      * @param output The output buffer to store the result in.
      * @param value The value to use in the functional task.
      * @param size The size of the buffer.
      * @return The output buffer with the result of the functional task.
      */
-    @NotNull CycloneBuffer<Float> execute(@NotNull CycloneBuffer<Float> input, @NotNull FloatArray output, float value, int size);
+    @NotNull CycloneBuffer<Float> execute(@NotNull CycloneBuffer<Float> buffer, @NotNull FloatArray output, float value, int size);
 
 }
