@@ -1,5 +1,6 @@
 package com.github.polyrocketmatt.cyclone.api.buffer;
 
+import com.github.polyrocketmatt.cyclone.api.exception.CycloneException;
 import com.github.polyrocketmatt.cyclone.api.function.TriFunction;
 import org.jetbrains.annotations.NotNull;
 import uk.ac.manchester.tornado.api.types.arrays.TornadoNativeArray;
@@ -19,6 +20,8 @@ import java.util.function.Predicate;
  * @author Matthias Kovacic
  */
 public interface CycloneBuffer<T> {
+
+    @NotNull CycloneBuffer<T> run() throws CycloneException;
 
     /**
      * Returns the buffer as a specialized type.
@@ -45,6 +48,15 @@ public interface CycloneBuffer<T> {
     @NotNull T get(int index) throws IndexOutOfBoundsException;
 
     /**
+     * Get the element at the specified index from the temporary buffer.
+     *
+     * @param index The index of the element to get.
+     * @return The element at the specified index.
+     * @throws IndexOutOfBoundsException
+     */
+    @NotNull T getTemp(int index) throws IndexOutOfBoundsException;
+
+    /**
      * Set the element at the specified index.
      *
      * @param index The index of the element to set.
@@ -52,14 +64,6 @@ public interface CycloneBuffer<T> {
      * @throws IndexOutOfBoundsException If the index is out of bounds.
      */
     void set(int index, @NotNull T value) throws IndexOutOfBoundsException;
-
-    /**
-     * Get the underlying native array representation of this buffer.
-     *
-     * @return The underlying native array representation of this buffer.
-     * @param <G> The type of the native array.
-     */
-    @NotNull TornadoNativeArray asNativeArray();
 
     /**
      * Filter the elements in the buffer based on the specified predicate. This method will

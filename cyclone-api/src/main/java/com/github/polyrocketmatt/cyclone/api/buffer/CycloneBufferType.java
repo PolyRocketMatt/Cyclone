@@ -1,4 +1,4 @@
-package com.github.polyrocketmatt.cyclone.impl.buffer;
+package com.github.polyrocketmatt.cyclone.api.buffer;
 
 public enum CycloneBufferType {
 

@@ -1,4 +1,4 @@
-package com.github.polyrocketmatt.cyclone.impl.exception;
+package com.github.polyrocketmatt.cyclone.api.exception;
 
 public class CycloneException extends RuntimeException {
 

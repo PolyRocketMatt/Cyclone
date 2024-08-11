@@ -3,18 +3,26 @@ package com.github.polyrocketmatt.cyclone.impl.buffer;
 import com.github.polyrocketmatt.cyclone.api.buffer.AggregationBuffer;
 import com.github.polyrocketmatt.cyclone.api.buffer.ArithmeticBuffer;
 import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
+import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBufferType;
 import com.github.polyrocketmatt.cyclone.api.function.TriFunction;
-import com.github.polyrocketmatt.cyclone.impl.exception.CycloneException;
-import com.github.polyrocketmatt.cyclone.impl.task.aggregate.SumTask;
+import com.github.polyrocketmatt.cyclone.api.exception.CycloneException;
+import com.github.polyrocketmatt.cyclone.api.task.BufferTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.AdditionTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.DivisionTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.MultiplicationTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.SubtractionTask;
-import com.github.polyrocketmatt.cyclone.impl.task.util.FillTask;
+import com.github.polyrocketmatt.cyclone.impl.task.functional.FillTask;
 import org.jetbrains.annotations.NotNull;
+import uk.ac.manchester.tornado.api.ImmutableTaskGraph;
+import uk.ac.manchester.tornado.api.TaskGraph;
+import uk.ac.manchester.tornado.api.TornadoExecutionPlan;
+import uk.ac.manchester.tornado.api.enums.DataTransferMode;
+import uk.ac.manchester.tornado.api.exceptions.TornadoExecutionPlanException;
 import uk.ac.manchester.tornado.api.types.arrays.FloatArray;
-import uk.ac.manchester.tornado.api.types.arrays.TornadoNativeArray;
 
+import javax.xml.crypto.Data;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -25,13 +33,23 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
     protected final int size;
     protected final FloatArray nativeBuffer;
     protected final FloatArray tmpBuffer;
+    protected final List<BufferTask> tasks;
+
+    private TaskGraph graph;
+    protected boolean tmpIsMain;
 
     public AbstractFloatBuffer(int size, float value) {
         this.size = size;
         this.nativeBuffer = new FloatArray(size);
         this.tmpBuffer = new FloatArray(size);
+        this.tmpIsMain = false;
+        this.tasks = new ArrayList<>();
 
-        fill(value);
+        this.graph = new TaskGraph("f1bg_%s".formatted(hashCode()))
+                .transferToDevice(DataTransferMode.FIRST_EXECUTION, nativeBuffer, tmpBuffer);
+
+        appendTask(new FillTask(nativeBuffer, tmpBuffer, value, size));
+        run();
     }
 
     private AbstractFloatBuffer checkBufferArgument(CycloneBuffer<Float> other) {
@@ -43,6 +61,54 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
     }
 
     @Override
+    public @NotNull CycloneBuffer<Float> run() {
+        //  First, resolve all tasks and swap buffers to propagate changes
+        tasks.forEach(task -> task.resolve(graph, CycloneBufferType.FLOAT));
+
+        //  Finally, transfer data back to host
+        graph.transferToHost(DataTransferMode.EVERY_EXECUTION, nativeBuffer)
+                .transferToHost(DataTransferMode.EVERY_EXECUTION, tmpBuffer);
+
+        //  Create and run immutable task graph
+        ImmutableTaskGraph itg = graph.snapshot();
+        try (TornadoExecutionPlan plan = new TornadoExecutionPlan(itg)) {
+            plan.execute();
+        } catch (TornadoExecutionPlanException ex) {
+            throw new CycloneException("Failed to execute buffer task!", ex);
+        }
+
+        //  Clear all tasks
+        tasks.clear();
+
+        //  Re-assign graph for next run
+        graph = new TaskGraph("f1bg_%s".formatted(hashCode()))
+                .transferToDevice(DataTransferMode.FIRST_EXECUTION, nativeBuffer, tmpBuffer, size);
+
+        //  Finally, return this buffer
+        return this;
+    }
+
+    protected void appendTask(@NotNull BufferTask task) {
+        tasks.add(task);
+        tmpIsMain = !tmpIsMain;
+    }
+
+    protected FloatArray constructFilled(float value) {
+        FloatArray values = new FloatArray(size);
+        for (int i = 0; i < size; i++)
+            values.set(i, value);
+        return values;
+    }
+
+    protected @NotNull FloatArray getMain() {
+        return (tmpIsMain) ? tmpBuffer : nativeBuffer;
+    }
+
+    protected @NotNull FloatArray getTemp() {
+        return (tmpIsMain) ? nativeBuffer : tmpBuffer;
+    }
+
+    @Override
     public int size() {
         return size;
     }
@@ -51,19 +117,21 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
     public @NotNull Float get(int index) throws IndexOutOfBoundsException {
         if (index < 0 || index >= size)
             throw new IndexOutOfBoundsException("Index out of bounds: %d".formatted(index));
-        return nativeBuffer.get(index);
+        return getMain().get(index);
+    }
+
+    @Override
+    public @NotNull Float getTemp(int index) throws IndexOutOfBoundsException {
+        if (index < 0 || index >= size)
+            throw new IndexOutOfBoundsException("Index out of bounds: %d".formatted(index));
+        return getTemp().get(index);
     }
 
     @Override
     public void set(int index, @NotNull Float value) throws IndexOutOfBoundsException {
         if (index < 0 || index >= size)
             throw new IndexOutOfBoundsException("Index out of bounds: %d".formatted(index));
-        nativeBuffer.set(index, value);
-    }
-
-    @Override
-    public @NotNull TornadoNativeArray asNativeArray() {
-        return nativeBuffer;
+        getMain().set(index, value);
     }
 
     @Override
@@ -93,60 +161,63 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
 
     @Override
     public @NotNull CycloneBuffer<Float> fill(Float value) {
-        return new FillTask().execute(this, tmpBuffer, value, size);
+        appendTask(new FillTask(getMain(), getTemp(), value, size));
+        return this;
     }
 
     @Override
     public @NotNull Float sum() {
-        return new SumTask().execute(this, tmpBuffer, size);
+        return 0.0f;
     }
 
     @Override
     public @NotNull ArithmeticBuffer<Float> add(@NotNull CycloneBuffer<Float> other) {
-        return (ArithmeticBuffer<Float>) new AdditionTask().execute(this, tmpBuffer,
-                checkBufferArgument(other).nativeBuffer, size);
+        appendTask(new AdditionTask(getMain(), getTemp(), checkBufferArgument(other).getMain(), size));
+        return this;
     }
 
     @Override
     public @NotNull ArithmeticBuffer<Float> add(@NotNull Float value) {
-        return (ArithmeticBuffer<Float>) new AdditionTask().execute(this, tmpBuffer,
-                value, size);
+        appendTask(new AdditionTask(getMain(), getTemp(), constructFilled(value), size));
+        return this;
     }
 
     @Override
     public @NotNull ArithmeticBuffer<Float> sub(@NotNull CycloneBuffer<Float> other) {
-        return (ArithmeticBuffer<Float>) new SubtractionTask().execute(this, tmpBuffer,
-                checkBufferArgument(other).nativeBuffer, size);
+        appendTask(new SubtractionTask(getMain(), getTemp(), checkBufferArgument(other).getMain(), size));
+        return this;
     }
 
     @Override
     public @NotNull ArithmeticBuffer<Float> sub(@NotNull Float value) {
-        return (ArithmeticBuffer<Float>) new SubtractionTask().execute(this, tmpBuffer,
-                value, size);
+        appendTask(new SubtractionTask(getMain(), getTemp(), constructFilled(value), size));
+        return this;
     }
 
     @Override
     public @NotNull ArithmeticBuffer<Float> mul(@NotNull CycloneBuffer<Float> other) {
-        return (ArithmeticBuffer<Float>) new MultiplicationTask().execute(this, tmpBuffer,
-                checkBufferArgument(other).nativeBuffer, size);
+        appendTask(new MultiplicationTask(getMain(), getTemp(), checkBufferArgument(other).getMain(), size));
+        return this;
     }
 
     @Override
     public @NotNull ArithmeticBuffer<Float> mul(@NotNull Float value) {
-        return (ArithmeticBuffer<Float>) new MultiplicationTask().execute(this, tmpBuffer,
-                value, size);
+        appendTask(new MultiplicationTask(getMain(), getTemp(), constructFilled(value), size));
+        return this;
     }
 
     @Override
     public @NotNull ArithmeticBuffer<Float> div(@NotNull CycloneBuffer<Float> other) {
-        return (ArithmeticBuffer<Float>) new DivisionTask().execute(this, tmpBuffer,
-                checkBufferArgument(other).nativeBuffer, size);
+        appendTask(new DivisionTask(getMain(), getTemp(), checkBufferArgument(other).getMain(), size));
+        return this;
     }
 
     @Override
     public @NotNull ArithmeticBuffer<Float> div(@NotNull Float value) {
-        return (ArithmeticBuffer<Float>) new DivisionTask().execute(this, tmpBuffer,
-                value, size);
+        if (value == 0.0f)
+            throw new CycloneException("Division by zero!");
+        appendTask(new DivisionTask(getMain(), getTemp(), constructFilled(value), size));
+        return this;
     }
 
 }

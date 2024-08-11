@@ -1,7 +1,8 @@
 package com.github.polyrocketmatt.cyclone.impl.buffer;
 
 import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
-import com.github.polyrocketmatt.cyclone.impl.exception.CycloneException;
+import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBufferType;
+import com.github.polyrocketmatt.cyclone.api.exception.CycloneException;
 
 import java.util.UUID;
 

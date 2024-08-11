@@ -1,6 +1,8 @@
 package com.github.polyrocketmatt.cyclone.impl.buffer;
 
 import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
+import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBufferType;
+import com.github.polyrocketmatt.cyclone.impl.utils.BufferUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class FloatBuffer1D extends AbstractFloatBuffer {
@@ -24,29 +26,14 @@ public class FloatBuffer1D extends AbstractFloatBuffer {
         StringBuilder builder = new StringBuilder();
         builder.append("Buffer Type: ").append(CycloneBufferType.FLOAT.name()).append("\n");
         builder.append("Buffer Size: ").append(size).append("\n");
-        builder.append("Buffer Data: ").append("\n\n");
+        builder.append("Buffer State: ").append(tmpIsMain).append("\n");
+        builder.append("Buffer Planned Tasks: ").append(tasks.size()).append("\n");
 
-        builder.append("| ");
-        int threshold = 3;
-        boolean skip = size > threshold * 2;
-        for (int i = 0; i < size; i++) {
-            if (skip && (i > (threshold - 1) && i < size - threshold)) {
-                if (i == threshold) {
-                    builder.append("... ");
-                }
+        //  Build the MAIN buffer data
+        builder.append("Buffer Data Main: ").append("\n\n");
+        builder.append(BufferUtils.buildBuffer1D(this));
+        builder.append("\n");
 
-                // Update the index to the last element
-                if (i < size - threshold)
-                    i = size - threshold - 1;
-
-                continue;
-            }
-
-            builder.append(get(i));
-            builder.append(" ");
-        }
-
-        builder.append("|");
         return builder.toString();
     }
 }
