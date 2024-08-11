@@ -3,6 +3,8 @@ package com.github.polyrocketmatt.cyclone.impl;
 import com.github.polyrocketmatt.cyclone.api.CycloneBuffer;
 import com.github.polyrocketmatt.cyclone.impl.exception.CycloneException;
 
+import java.util.UUID;
+
 public class CycloneBufferFactory {
 
     public static <T> CycloneBuffer<T> construct(CycloneBufferType type, int dimension, int size) {
@@ -22,6 +24,10 @@ public class CycloneBufferFactory {
             case 1              -> new CycloneFloatBuffer1D(size, value);
             default             -> throw new CycloneException("Unsupported buffer dimension: %d", dimension);
         };
+    }
+
+    protected static String getBufferTaskName() {
+        return UUID.randomUUID().toString();
     }
 
 }

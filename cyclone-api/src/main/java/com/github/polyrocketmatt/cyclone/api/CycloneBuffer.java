@@ -2,6 +2,7 @@ package com.github.polyrocketmatt.cyclone.api;
 
 import com.github.polyrocketmatt.cyclone.api.function.TriFunction;
 import org.jetbrains.annotations.NotNull;
+import uk.ac.manchester.tornado.api.types.arrays.TornadoNativeArray;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -53,12 +54,22 @@ public interface CycloneBuffer<T> {
     void set(int index, @NotNull T value) throws IndexOutOfBoundsException;
 
     /**
-     * Filter the elements in the buffer based on the specified predicate.
+     * Get the underlying native array representation of this buffer.
+     *
+     * @return The underlying native array representation of this buffer.
+     * @param <G> The type of the native array.
+     */
+    @NotNull TornadoNativeArray asNativeArray();
+
+    /**
+     * Filter the elements in the buffer based on the specified predicate. This method will
+     * set elements that do not satisfy the predicate to the provided default value.
      *
      * @param predicate The predicate to filter the elements with.
+     * @param defaultValue The default value to set elements that do not satisfy the predicate to.
      * @return A new buffer containing the elements that satisfy the predicate.
      */
-    @NotNull CycloneBuffer<T> filter(Predicate<T> predicate);
+    @NotNull CycloneBuffer<T> filter(Predicate<T> predicate, T defaultValue);
 
     /**
      * Map the elements in the buffer using the specified mapping function.

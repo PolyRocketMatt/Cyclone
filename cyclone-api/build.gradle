@@ -5,6 +5,9 @@ plugins {
 group = 'com.github.polyrocketmatt.cyclone'
 version = '1.0-SNAPSHOT'
 
+sourceCompatibility = '21'
+targetCompatibility = '21'
+
 repositories {
     mavenCentral()
 
@@ -26,6 +29,10 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ["--enable-preview"]
 }
 
 tasks.named('jar') {

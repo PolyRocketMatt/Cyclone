@@ -18,4 +18,5 @@ public class CycloneFloatBuffer1D extends AbstractFloatCycloneBuffer {
     public <G extends CycloneBuffer<Float>> @NotNull G as() {
         return (G) this;
     }
+
 }
