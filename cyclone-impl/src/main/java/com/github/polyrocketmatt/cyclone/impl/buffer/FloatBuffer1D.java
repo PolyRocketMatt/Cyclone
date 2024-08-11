@@ -1,15 +1,15 @@
-package com.github.polyrocketmatt.cyclone.impl;
+package com.github.polyrocketmatt.cyclone.impl.buffer;
 
-import com.github.polyrocketmatt.cyclone.api.CycloneBuffer;
+import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
 import org.jetbrains.annotations.NotNull;
 
-public class CycloneFloatBuffer1D extends AbstractFloatCycloneBuffer {
+public class FloatBuffer1D extends AbstractFloatBuffer {
 
-    protected CycloneFloatBuffer1D(int size) {
+    protected FloatBuffer1D(int size) {
         this(size, 0.0f);
     }
 
-    protected CycloneFloatBuffer1D(int size, float value) {
+    protected FloatBuffer1D(int size, float value) {
         super(size, value);
     }
 

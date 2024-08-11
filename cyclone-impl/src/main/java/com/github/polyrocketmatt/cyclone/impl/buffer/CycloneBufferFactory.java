@@ -1,6 +1,6 @@
-package com.github.polyrocketmatt.cyclone.impl;
+package com.github.polyrocketmatt.cyclone.impl.buffer;
 
-import com.github.polyrocketmatt.cyclone.api.CycloneBuffer;
+import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
 import com.github.polyrocketmatt.cyclone.impl.exception.CycloneException;
 
 import java.util.UUID;
@@ -19,9 +19,9 @@ public class CycloneBufferFactory {
         };
     }
 
-    private static AbstractFloatCycloneBuffer constructFloatBuffer(int dimension, int size, float value) {
+    private static AbstractFloatBuffer constructFloatBuffer(int dimension, int size, float value) {
         return switch (dimension) {
-            case 1              -> new CycloneFloatBuffer1D(size, value);
+            case 1              -> new FloatBuffer1D(size, value);
             default             -> throw new CycloneException("Unsupported buffer dimension: %d", dimension);
         };
     }

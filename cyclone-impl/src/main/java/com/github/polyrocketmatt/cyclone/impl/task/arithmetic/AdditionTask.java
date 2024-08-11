@@ -1,6 +1,6 @@
 package com.github.polyrocketmatt.cyclone.impl.task.arithmetic;
 
-import com.github.polyrocketmatt.cyclone.api.CycloneBuffer;
+import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
 import com.github.polyrocketmatt.cyclone.api.task.ArithmeticTask;
 import com.github.polyrocketmatt.cyclone.impl.exception.CycloneException;
 import org.jetbrains.annotations.NotNull;

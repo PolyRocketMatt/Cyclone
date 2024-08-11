@@ -1,6 +1,6 @@
 package com.github.polyrocketmatt.cyclone.api.task;
 
-import com.github.polyrocketmatt.cyclone.api.CycloneBuffer;
+import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
 import org.jetbrains.annotations.NotNull;
 import uk.ac.manchester.tornado.api.types.arrays.FloatArray;
 

@@ -1,4 +1,4 @@
-package com.github.polyrocketmatt.cyclone.api;
+package com.github.polyrocketmatt.cyclone.api.buffer;
 
 import org.jetbrains.annotations.NotNull;
 

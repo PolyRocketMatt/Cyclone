@@ -1,12 +1,15 @@
-package com.github.polyrocketmatt.cyclone.impl;
+package com.github.polyrocketmatt.cyclone.impl.buffer;
 
-import com.github.polyrocketmatt.cyclone.api.ArithmeticBuffer;
-import com.github.polyrocketmatt.cyclone.api.CycloneBuffer;
-import com.github.polyrocketmatt.cyclone.api.LinAlgBuffer;
-import com.github.polyrocketmatt.cyclone.api.NoiseBuffer;
+import com.github.polyrocketmatt.cyclone.api.buffer.ArithmeticBuffer;
+import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
+import com.github.polyrocketmatt.cyclone.api.buffer.LinAlgBuffer;
+import com.github.polyrocketmatt.cyclone.api.buffer.NoiseBuffer;
 import com.github.polyrocketmatt.cyclone.api.function.TriFunction;
 import com.github.polyrocketmatt.cyclone.impl.exception.CycloneException;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.AdditionTask;
+import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.DivisionTask;
+import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.MultiplicationTask;
+import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.SubtractionTask;
 import com.github.polyrocketmatt.cyclone.impl.task.util.FillTask;
 import org.jetbrains.annotations.NotNull;
 import uk.ac.manchester.tornado.api.types.arrays.FloatArray;
@@ -16,14 +19,14 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public abstract class AbstractFloatCycloneBuffer implements CycloneBuffer<Float>,
+public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
         ArithmeticBuffer<Float>, NoiseBuffer<Float>, LinAlgBuffer<Float> {
 
     protected final int size;
     protected final FloatArray nativeBuffer;
     protected final FloatArray tmpBuffer;
 
-    public AbstractFloatCycloneBuffer(int size, float value) {
+    public AbstractFloatBuffer(int size, float value) {
         this.size = size;
         this.nativeBuffer = new FloatArray(size);
         this.tmpBuffer = new FloatArray(size);
@@ -31,10 +34,10 @@ public abstract class AbstractFloatCycloneBuffer implements CycloneBuffer<Float>
         fill(value);
     }
 
-    private AbstractFloatCycloneBuffer checkBufferArgument(CycloneBuffer<Float> other) {
+    private AbstractFloatBuffer checkBufferArgument(CycloneBuffer<Float> other) {
         if (size != other.size())
             throw new CycloneException("Buffer sizes do not match!");
-        if (!(other instanceof AbstractFloatCycloneBuffer otherBuffer))
+        if (!(other instanceof AbstractFloatBuffer otherBuffer))
             throw new CycloneException("Buffer types do not match!");
         return otherBuffer;
     }
@@ -102,6 +105,42 @@ public abstract class AbstractFloatCycloneBuffer implements CycloneBuffer<Float>
     @Override
     public @NotNull ArithmeticBuffer<Float> add(@NotNull Float value) {
         return (ArithmeticBuffer<Float>) new AdditionTask().execute(this, tmpBuffer,
+                value, size);
+    }
+
+    @Override
+    public @NotNull ArithmeticBuffer<Float> sub(@NotNull CycloneBuffer<Float> other) {
+        return (ArithmeticBuffer<Float>) new SubtractionTask().execute(this, tmpBuffer,
+                checkBufferArgument(other).nativeBuffer, size);
+    }
+
+    @Override
+    public @NotNull ArithmeticBuffer<Float> sub(@NotNull Float value) {
+        return (ArithmeticBuffer<Float>) new SubtractionTask().execute(this, tmpBuffer,
+                value, size);
+    }
+
+    @Override
+    public @NotNull ArithmeticBuffer<Float> mul(@NotNull CycloneBuffer<Float> other) {
+        return (ArithmeticBuffer<Float>) new MultiplicationTask().execute(this, tmpBuffer,
+                checkBufferArgument(other).nativeBuffer, size);
+    }
+
+    @Override
+    public @NotNull ArithmeticBuffer<Float> mul(@NotNull Float value) {
+        return (ArithmeticBuffer<Float>) new MultiplicationTask().execute(this, tmpBuffer,
+                value, size);
+    }
+
+    @Override
+    public @NotNull ArithmeticBuffer<Float> div(@NotNull CycloneBuffer<Float> other) {
+        return (ArithmeticBuffer<Float>) new DivisionTask().execute(this, tmpBuffer,
+                checkBufferArgument(other).nativeBuffer, size);
+    }
+
+    @Override
+    public @NotNull ArithmeticBuffer<Float> div(@NotNull Float value) {
+        return (ArithmeticBuffer<Float>) new DivisionTask().execute(this, tmpBuffer,
                 value, size);
     }
 

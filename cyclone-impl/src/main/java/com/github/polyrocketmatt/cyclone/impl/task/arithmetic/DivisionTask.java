@@ -1,7 +1,7 @@
-package com.github.polyrocketmatt.cyclone.impl.task.util;
+package com.github.polyrocketmatt.cyclone.impl.task.arithmetic;
 
 import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
-import com.github.polyrocketmatt.cyclone.api.task.FunctionalTask;
+import com.github.polyrocketmatt.cyclone.api.task.ArithmeticTask;
 import com.github.polyrocketmatt.cyclone.impl.exception.CycloneException;
 import org.jetbrains.annotations.NotNull;
 import uk.ac.manchester.tornado.api.ImmutableTaskGraph;
@@ -13,16 +13,26 @@ import uk.ac.manchester.tornado.api.enums.DataTransferMode;
 import uk.ac.manchester.tornado.api.exceptions.TornadoExecutionPlanException;
 import uk.ac.manchester.tornado.api.types.arrays.FloatArray;
 
-public class FillTask implements FunctionalTask {
+public class DivisionTask implements ArithmeticTask {
 
     @Override
     public @NotNull CycloneBuffer<Float> execute(@NotNull CycloneBuffer<Float> buffer, @NotNull FloatArray output, float value, int size) {
+        FloatArray values = new FloatArray(size);
+        values.init(value);
+        return execute(buffer, output, values, size);
+    }
+
+    @Override
+    public @NotNull CycloneBuffer<Float> execute(@NotNull CycloneBuffer<Float> buffer, @NotNull FloatArray output, @NotNull FloatArray values, int size) {
         if (!(buffer.asNativeArray() instanceof FloatArray input))
             throw new CycloneException("Buffer type does not match native array type!");
+        for (int i = 0; i < size; i++)
+            if (values.get(i) == 0)
+                throw new CycloneException("Cannot divide by zero!");
 
-        TaskGraph graph = new TaskGraph("fill_graph")
-                .transferToDevice(DataTransferMode.FIRST_EXECUTION, input, output, value, size)
-                .task("fill", FillTask::fillFloat, input, output, value, size)
+        TaskGraph graph = new TaskGraph("division_graph")
+                .transferToDevice(DataTransferMode.FIRST_EXECUTION, input, output, values, size)
+                .task("division", DivisionTask::divFloat, input, output, values, size)
                 .transferToHost(DataTransferMode.EVERY_EXECUTION, output);
         ImmutableTaskGraph itg = graph.snapshot();
 
@@ -34,16 +44,17 @@ public class FillTask implements FunctionalTask {
                     buffer.set(i, output.get(i));
             }
         } catch (TornadoExecutionPlanException ex) {
-            throw new CycloneException("Failed to execute fill task!", ex);
+            throw new CycloneException("Failed to execute division task!", ex);
         }
 
         return buffer;
     }
 
-    private static void fillFloat(FloatArray input, FloatArray output,
-                                  float value, int size) {
+    private static void divFloat(FloatArray input, FloatArray output,
+                                 FloatArray values, int size) {
         for (@Parallel int i = 0; i < size; i++)
-            output.set(i, value);
+            output.set(i, input.get(i) / values.get(i));
     }
+
 
 }
