@@ -105,4 +105,12 @@ public interface CycloneBuffer<T> {
      */
     @NotNull CycloneBuffer<T> zipWithIndex(CycloneBuffer<T> other, TriFunction<T, T, Integer, T> zipper);
 
+    /**
+     * Fill the buffer with the specified value.
+     *
+     * @param value The value to fill the buffer with.
+     * @return The buffer filled with the specified value.
+     */
+    @NotNull CycloneBuffer<T> fill(T value);
+
 }

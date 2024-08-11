@@ -27,6 +27,8 @@ public class AdditionTask implements ArithmeticTask {
         if (!(buffer.asNativeArray() instanceof FloatArray input))
             throw new CycloneException("Buffer type does not match native array type!");
 
+        System.out.println(values.get(0));
+
         TaskGraph graph = new TaskGraph("addition_graph")
                 .transferToDevice(DataTransferMode.FIRST_EXECUTION, input, output, values, size)
                 .task("addition", AdditionTask::addFloat, input, output, values, size)
@@ -48,7 +50,7 @@ public class AdditionTask implements ArithmeticTask {
     }
 
     private static void addFloat(FloatArray input, FloatArray output,
-                          FloatArray values, int size) {
+                                 FloatArray values, int size) {
         for (@Parallel int i = 0; i < size; i++)
             output.set(i, input.get(i) + values.get(i));
     }

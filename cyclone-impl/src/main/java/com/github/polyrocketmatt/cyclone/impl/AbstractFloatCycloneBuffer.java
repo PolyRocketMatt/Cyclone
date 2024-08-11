@@ -7,6 +7,7 @@ import com.github.polyrocketmatt.cyclone.api.NoiseBuffer;
 import com.github.polyrocketmatt.cyclone.api.function.TriFunction;
 import com.github.polyrocketmatt.cyclone.impl.exception.CycloneException;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.AdditionTask;
+import com.github.polyrocketmatt.cyclone.impl.task.util.FillTask;
 import org.jetbrains.annotations.NotNull;
 import uk.ac.manchester.tornado.api.types.arrays.FloatArray;
 import uk.ac.manchester.tornado.api.types.arrays.TornadoNativeArray;
@@ -19,20 +20,12 @@ public abstract class AbstractFloatCycloneBuffer implements CycloneBuffer<Float>
         ArithmeticBuffer<Float>, NoiseBuffer<Float>, LinAlgBuffer<Float> {
 
     protected final int size;
-    protected final float[] buffer;
     protected final FloatArray nativeBuffer;
 
     public AbstractFloatCycloneBuffer(int size, float value) {
         this.size = size;
-        this.buffer = new float[size];
         this.nativeBuffer = new FloatArray(size);
-
-        // Fill buffer with initial value
-        for (int i = 0; i < size; i++)
-            buffer[i] = value;
-
-        // Reload values in native buffer
-        reloadNativeBuffer();
+        this.nativeBuffer.init(value);
     }
 
     private AbstractFloatCycloneBuffer checkBufferArgument(CycloneBuffer<Float> other) {
@@ -41,11 +34,6 @@ public abstract class AbstractFloatCycloneBuffer implements CycloneBuffer<Float>
         if (!(other instanceof AbstractFloatCycloneBuffer otherBuffer))
             throw new CycloneException("Buffer types do not match!");
         return otherBuffer;
-    }
-
-    private void reloadNativeBuffer() {
-        for (int i = 0; i < size; i++)
-            nativeBuffer.set(i, buffer[i]);
     }
 
     @Override
@@ -57,14 +45,14 @@ public abstract class AbstractFloatCycloneBuffer implements CycloneBuffer<Float>
     public @NotNull Float get(int index) throws IndexOutOfBoundsException {
         if (index < 0 || index >= size)
             throw new IndexOutOfBoundsException("Index out of bounds: %d".formatted(index));
-        return buffer[index];
+        return nativeBuffer.get(index);
     }
 
     @Override
     public void set(int index, @NotNull Float value) throws IndexOutOfBoundsException {
         if (index < 0 || index >= size)
             throw new IndexOutOfBoundsException("Index out of bounds: %d".formatted(index));
-        buffer[index] = value;
+        nativeBuffer.set(index, value);
     }
 
     @Override
@@ -95,6 +83,11 @@ public abstract class AbstractFloatCycloneBuffer implements CycloneBuffer<Float>
     @Override
     public @NotNull CycloneBuffer<Float> zipWithIndex(CycloneBuffer<Float> other, TriFunction<Float, Float, Integer, Float> zipper) {
         return null;
+    }
+
+    @Override
+    public @NotNull CycloneBuffer<Float> fill(Float value) {
+        return new FillTask().execute(this, new FloatArray(size), value, size);
     }
 
     @Override
