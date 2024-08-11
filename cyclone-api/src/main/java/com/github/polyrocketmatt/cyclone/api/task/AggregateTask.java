@@ -16,11 +16,11 @@ public interface AggregateTask extends BufferTask {
     /**
      * Execute an aggregate task on a float-based buffer.
      *
-     * @param buffer The buffer to execute the aggregate task on.
+     * @param input The buffer to execute the aggregate task on.
      * @param output The output buffer to store the result in.
      * @param size The size of the buffer.
      * @return The result of the aggregate task.
      */
-    float execute(@NotNull CycloneBuffer<Float> buffer, @NotNull FloatArray output, int size);
+    float execute(@NotNull CycloneBuffer<Float> input, @NotNull FloatArray output, int size);
 
 }
