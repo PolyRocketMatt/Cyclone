@@ -21,11 +21,14 @@ public abstract class AbstractFloatCycloneBuffer implements CycloneBuffer<Float>
 
     protected final int size;
     protected final FloatArray nativeBuffer;
+    protected final FloatArray tmpBuffer;
 
     public AbstractFloatCycloneBuffer(int size, float value) {
         this.size = size;
         this.nativeBuffer = new FloatArray(size);
-        this.nativeBuffer.init(value);
+        this.tmpBuffer = new FloatArray(size);
+
+        fill(value);
     }
 
     private AbstractFloatCycloneBuffer checkBufferArgument(CycloneBuffer<Float> other) {
@@ -87,18 +90,18 @@ public abstract class AbstractFloatCycloneBuffer implements CycloneBuffer<Float>
 
     @Override
     public @NotNull CycloneBuffer<Float> fill(Float value) {
-        return new FillTask().execute(this, new FloatArray(size), value, size);
+        return new FillTask().execute(this, tmpBuffer, value, size);
     }
 
     @Override
     public @NotNull ArithmeticBuffer<Float> add(@NotNull CycloneBuffer<Float> other) {
-        return (ArithmeticBuffer<Float>) new AdditionTask().execute(this, new FloatArray(size),
+        return (ArithmeticBuffer<Float>) new AdditionTask().execute(this, tmpBuffer,
                 checkBufferArgument(other).nativeBuffer, size);
     }
 
     @Override
     public @NotNull ArithmeticBuffer<Float> add(@NotNull Float value) {
-        return (ArithmeticBuffer<Float>) new AdditionTask().execute(this, new FloatArray(size),
+        return (ArithmeticBuffer<Float>) new AdditionTask().execute(this, tmpBuffer,
                 value, size);
     }
 
