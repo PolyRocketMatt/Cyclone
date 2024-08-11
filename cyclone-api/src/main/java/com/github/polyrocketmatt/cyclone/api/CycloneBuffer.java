@@ -113,4 +113,11 @@ public interface CycloneBuffer<T> {
      */
     @NotNull CycloneBuffer<T> fill(T value);
 
+    /**
+     * Prints the information and contents of the buffer.
+     *
+     * @return The information and contents of the buffer.
+     */
+    @NotNull String info();
+
 }
