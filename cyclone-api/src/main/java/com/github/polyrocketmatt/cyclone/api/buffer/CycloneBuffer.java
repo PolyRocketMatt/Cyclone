@@ -79,7 +79,7 @@ public interface CycloneBuffer<T> extends ArithmeticBuffer<T>, AggregationBuffer
      * @param defaultValue The default value to set elements that do not satisfy the predicate to.
      * @return A new buffer containing the elements that satisfy the predicate.
      */
-    @NotNull CycloneBuffer<T> filter(Predicate<T> predicate, T defaultValue);
+    @NotNull CycloneBuffer<T> filter(Predicate<T> predicate);
 
     /**
      * Map the elements in the buffer using the specified mapping function.

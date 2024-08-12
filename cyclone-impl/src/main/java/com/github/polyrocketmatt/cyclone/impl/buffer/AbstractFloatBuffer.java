@@ -55,6 +55,20 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
         run();
     }
 
+    protected AbstractFloatBuffer(int size, List<Float> values) {
+        this.size = size;
+        this.nativeBuffer = new FloatArray(size);
+        this.tmpBuffer = new FloatArray(size);
+        this.tmpIsMain = false;
+        this.tasks = new ArrayList<>();
+
+        this.graph = new TaskGraph("f1bg_%s".formatted(hashCode()))
+                .transferToDevice(DataTransferMode.FIRST_EXECUTION, nativeBuffer, tmpBuffer);
+
+        for (int i = 0; i < size; i++)
+            nativeBuffer.set(i, values.get(i));
+    }
+
     private AbstractFloatBuffer checkBufferArgument(CycloneBuffer<Float> other) {
         if (size != other.size())
             throw new CycloneException("Buffer sizes do not match!");
@@ -146,11 +160,6 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
         if (index < 0 || index >= size)
             throw new IndexOutOfBoundsException("Index out of bounds: %d".formatted(index));
         getMain().set(index, value);
-    }
-
-    @Override
-    public @NotNull CycloneBuffer<Float> filter(Predicate<Float> predicate, Float defaultValue) {
-        return null;
     }
 
     @Override
