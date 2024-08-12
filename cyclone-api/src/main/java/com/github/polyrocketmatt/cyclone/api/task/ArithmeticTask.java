@@ -4,8 +4,4 @@ import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBufferType;
 import org.jetbrains.annotations.NotNull;
 import uk.ac.manchester.tornado.api.TaskGraph;
 
-public interface ArithmeticTask extends BufferTask {
-
-    void resolve(@NotNull TaskGraph graph, @NotNull CycloneBufferType type);
-
-}
+public interface ArithmeticTask extends BufferTask { }

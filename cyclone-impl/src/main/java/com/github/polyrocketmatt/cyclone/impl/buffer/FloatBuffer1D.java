@@ -2,10 +2,11 @@ package com.github.polyrocketmatt.cyclone.impl.buffer;
 
 import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
 import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBufferType;
+import com.github.polyrocketmatt.cyclone.api.buffer.dimension.Buffer1D;
 import com.github.polyrocketmatt.cyclone.impl.utils.BufferUtils;
 import org.jetbrains.annotations.NotNull;
 
-public class FloatBuffer1D extends AbstractFloatBuffer {
+public class FloatBuffer1D extends AbstractFloatBuffer implements Buffer1D {
 
     protected FloatBuffer1D(int size) {
         this(size, 0.0f);

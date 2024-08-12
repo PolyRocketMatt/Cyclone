@@ -21,7 +21,20 @@ import java.util.function.Predicate;
  */
 public interface CycloneBuffer<T> {
 
+    /**
+     * Runs the pending tasks on the buffer and returns the buffer with the results.
+     *
+     * @return The buffer with the results.
+     * @throws CycloneException If an error occurs during the execution of the tasks.
+     */
     @NotNull CycloneBuffer<T> run() throws CycloneException;
+
+    /**
+     * Flushes the buffer by running the pending tasks.
+     *
+     * @throws CycloneException If an error occurs during the execution of the tasks.
+     */
+    void flush() throws CycloneException;
 
     /**
      * Returns the buffer as a specialized type.

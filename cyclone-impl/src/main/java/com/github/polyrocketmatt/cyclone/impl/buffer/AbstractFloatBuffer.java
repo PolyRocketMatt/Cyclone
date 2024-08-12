@@ -7,6 +7,7 @@ import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBufferType;
 import com.github.polyrocketmatt.cyclone.api.function.TriFunction;
 import com.github.polyrocketmatt.cyclone.api.exception.CycloneException;
 import com.github.polyrocketmatt.cyclone.api.task.BufferTask;
+import com.github.polyrocketmatt.cyclone.impl.task.aggregate.SumTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.AdditionTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.DivisionTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.MultiplicationTask;
@@ -20,7 +21,6 @@ import uk.ac.manchester.tornado.api.enums.DataTransferMode;
 import uk.ac.manchester.tornado.api.exceptions.TornadoExecutionPlanException;
 import uk.ac.manchester.tornado.api.types.arrays.FloatArray;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -62,6 +62,9 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
 
     @Override
     public @NotNull CycloneBuffer<Float> run() {
+        if (tasks.isEmpty())
+            return this;
+
         //  First, resolve all tasks and swap buffers to propagate changes
         tasks.forEach(task -> task.resolve(graph, CycloneBufferType.FLOAT));
 
@@ -86,6 +89,11 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
 
         //  Finally, return this buffer
         return this;
+    }
+
+    @Override
+    public void flush() throws CycloneException {
+        run();
     }
 
     protected void appendTask(@NotNull BufferTask task) {
@@ -167,7 +175,10 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
 
     @Override
     public @NotNull Float sum() {
-        return 0.0f;
+        flush();
+        appendTask(new SumTask(getMain(), getTemp()));
+        flush();
+        return getMain().get(0);
     }
 
     @Override

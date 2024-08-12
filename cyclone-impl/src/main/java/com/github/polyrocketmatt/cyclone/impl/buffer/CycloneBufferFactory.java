@@ -26,9 +26,5 @@ public class CycloneBufferFactory {
             default             -> throw new CycloneException("Unsupported buffer dimension: %d", dimension);
         };
     }
-
-    protected static String getBufferTaskName() {
-        return UUID.randomUUID().toString();
-    }
-
+    
 }
