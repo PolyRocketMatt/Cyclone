@@ -13,4 +13,11 @@ public class CycloneBufferFactory {
         };
     }
 
+    public static Buffer1D constructBuffer1D(CycloneBufferType type, int size) {
+        return switch (type) {
+            case FLOAT  -> new FloatBuffer1D(size, 0.0f);
+            default     -> throw new CycloneException("Unsupported buffer type: %s".formatted(type));
+        };
+    }
+
 }
