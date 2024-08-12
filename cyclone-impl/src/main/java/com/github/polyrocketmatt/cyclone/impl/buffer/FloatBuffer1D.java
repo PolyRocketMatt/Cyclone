@@ -13,8 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static com.github.polyrocketmatt.cyclone.impl.utils.BufferUtils.toArray;
-
 public class FloatBuffer1D extends AbstractFloatBuffer implements Buffer1D {
 
     protected FloatBuffer1D(int size, float value) {
@@ -34,7 +32,7 @@ public class FloatBuffer1D extends AbstractFloatBuffer implements Buffer1D {
     @Override
     public @NotNull CycloneBuffer<Float> filter(Predicate<Float> predicate) {
         List<Float> filtered = new ArrayList<>();
-        TypeUtils.toFloatStream(nativeBuffer).parallel().filter(predicate).forEach(filtered::add);
+        TypeUtils.toFloatStream(getMain()).parallel().filter(predicate).forEach(filtered::add);
         return new FloatBuffer1D(filtered.size(), filtered);
     }
 

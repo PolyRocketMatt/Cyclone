@@ -16,6 +16,8 @@ import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.DivisionTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.MultiplicationTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.SubtractionTask;
 import com.github.polyrocketmatt.cyclone.impl.task.functional.FillTask;
+import com.github.polyrocketmatt.cyclone.impl.utils.BufferUtils;
+import com.github.polyrocketmatt.cyclone.impl.utils.TypeUtils;
 import org.jetbrains.annotations.NotNull;
 import uk.ac.manchester.tornado.api.ImmutableTaskGraph;
 import uk.ac.manchester.tornado.api.TaskGraph;
@@ -29,6 +31,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 
 public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
         AggregationBuffer<Float>, ArithmeticBuffer<Float> {
@@ -164,12 +167,22 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
 
     @Override
     public @NotNull CycloneBuffer<Float> map(Function<Float, Float> mapper) {
-        return null;
+        Float[] mapping = TypeUtils.toFloatStream(getMain())
+                .parallel()
+                .map(mapper)
+                .toArray(Float[]::new);
+        BufferUtils.mapIntoNative(this, mapping);
+        return this;
     }
 
     @Override
     public @NotNull CycloneBuffer<Float> mapIndexed(BiFunction<Integer, Float, Float> mapper) {
-        return null;
+        Float[] mapping = IntStream.range(0, size)
+                .parallel()
+                .mapToObj(i -> mapper.apply(i, getMain().get(i)))
+                .toArray(Float[]::new);
+        BufferUtils.mapIntoNative(this, mapping);
+        return this;
     }
 
     @Override

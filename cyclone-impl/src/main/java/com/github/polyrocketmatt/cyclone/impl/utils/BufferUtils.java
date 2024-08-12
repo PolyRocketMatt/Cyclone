@@ -1,9 +1,14 @@
 package com.github.polyrocketmatt.cyclone.impl.utils;
 
 import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
-import uk.ac.manchester.tornado.api.types.arrays.FloatArray;
+
+import java.util.stream.IntStream;
 
 public class BufferUtils {
+
+    public static <T> void mapIntoNative(CycloneBuffer<T> buffer, T[] values) {
+        IntStream.range(0, values.length).forEach(i -> buffer.set(i, values[i]));
+    }
 
     public static <T> String buildBuffer1D(CycloneBuffer<T> buffer) {
         StringBuilder builder = new StringBuilder();
