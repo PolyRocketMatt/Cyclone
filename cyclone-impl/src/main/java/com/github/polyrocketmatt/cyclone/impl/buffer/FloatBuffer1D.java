@@ -5,11 +5,15 @@ import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
 import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBufferType;
 import com.github.polyrocketmatt.cyclone.api.buffer.dimension.Buffer1D;
 import com.github.polyrocketmatt.cyclone.impl.utils.BufferUtils;
+import com.github.polyrocketmatt.cyclone.impl.utils.TypeUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
+
+import static com.github.polyrocketmatt.cyclone.impl.utils.BufferUtils.toArray;
 
 public class FloatBuffer1D extends AbstractFloatBuffer implements Buffer1D {
 
@@ -30,11 +34,7 @@ public class FloatBuffer1D extends AbstractFloatBuffer implements Buffer1D {
     @Override
     public @NotNull CycloneBuffer<Float> filter(Predicate<Float> predicate) {
         List<Float> filtered = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            float value = getMain().get(i);
-            if (predicate.test(value))
-                filtered.add(value);
-        }
+        TypeUtils.toFloatStream(nativeBuffer).parallel().filter(predicate).forEach(filtered::add);
         return new FloatBuffer1D(filtered.size(), filtered);
     }
 

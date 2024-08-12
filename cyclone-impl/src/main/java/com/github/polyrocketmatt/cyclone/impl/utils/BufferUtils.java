@@ -1,6 +1,7 @@
 package com.github.polyrocketmatt.cyclone.impl.utils;
 
 import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
+import uk.ac.manchester.tornado.api.types.arrays.FloatArray;
 
 public class BufferUtils {
 
