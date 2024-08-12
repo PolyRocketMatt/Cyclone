@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * @version 0.0.1
  * @author Matthias Kovacic
  */
-public interface ArithmeticBuffer<T> extends CycloneBuffer<T> {
+public interface ArithmeticBuffer<T> extends BufferBase<T> {
 
     /**
      * Adds the elements of this buffer with the elements of another buffer.

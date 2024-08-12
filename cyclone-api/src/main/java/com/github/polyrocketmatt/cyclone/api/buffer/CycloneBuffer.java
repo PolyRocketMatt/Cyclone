@@ -2,8 +2,8 @@ package com.github.polyrocketmatt.cyclone.api.buffer;
 
 import com.github.polyrocketmatt.cyclone.api.exception.CycloneException;
 import com.github.polyrocketmatt.cyclone.api.function.TriFunction;
+import com.github.polyrocketmatt.cyclone.api.task.AggregationTask;
 import org.jetbrains.annotations.NotNull;
-import uk.ac.manchester.tornado.api.types.arrays.TornadoNativeArray;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -19,7 +19,7 @@ import java.util.function.Predicate;
  * @version 0.0.1
  * @author Matthias Kovacic
  */
-public interface CycloneBuffer<T> {
+public interface CycloneBuffer<T> extends ArithmeticBuffer<T>, AggregationBuffer<T> {
 
     /**
      * Runs the pending tasks on the buffer and returns the buffer with the results.
@@ -30,19 +30,12 @@ public interface CycloneBuffer<T> {
     @NotNull CycloneBuffer<T> run() throws CycloneException;
 
     /**
-     * Flushes the buffer by running the pending tasks.
+     * Reduces the buffer by running the pending tasks and returns the result.
      *
+     * @return The result of the reduction.
      * @throws CycloneException If an error occurs during the execution of the tasks.
      */
-    void flush() throws CycloneException;
-
-    /**
-     * Returns the buffer as a specialized type.
-     *
-     * @return The buffer as a specialized type.
-     * @param <G> The specialized type of the buffer.
-     */
-    @NotNull <G extends CycloneBuffer<T>> G as();
+    @NotNull T reduce(@NotNull AggregationTask reduction) throws CycloneException;
 
     /**
      * Get the size of the buffer.

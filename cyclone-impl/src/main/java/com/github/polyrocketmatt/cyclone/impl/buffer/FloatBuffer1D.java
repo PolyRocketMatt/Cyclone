@@ -1,6 +1,6 @@
 package com.github.polyrocketmatt.cyclone.impl.buffer;
 
-import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
+import com.github.polyrocketmatt.cyclone.api.buffer.BufferBase;
 import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBufferType;
 import com.github.polyrocketmatt.cyclone.api.buffer.dimension.Buffer1D;
 import com.github.polyrocketmatt.cyclone.impl.utils.BufferUtils;
@@ -18,7 +18,7 @@ public class FloatBuffer1D extends AbstractFloatBuffer implements Buffer1D {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <G extends CycloneBuffer<Float>> @NotNull G as() {
+    public <G extends BufferBase<Float>> @NotNull G as() {
         return (G) this;
     }
 

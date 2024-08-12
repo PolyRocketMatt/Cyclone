@@ -10,12 +10,12 @@ import uk.ac.manchester.tornado.api.annotations.Reduce;
 import uk.ac.manchester.tornado.api.types.arrays.FloatArray;
 import uk.ac.manchester.tornado.api.types.arrays.TornadoNativeArray;
 
-public class SumTask implements AggregationTask {
+public class MinTask implements AggregationTask {
 
     private final TornadoNativeArray input;
     private final TornadoNativeArray output;
 
-    public SumTask(@NotNull TornadoNativeArray input, @NotNull TornadoNativeArray output) {
+    public MinTask(@NotNull TornadoNativeArray input, @NotNull TornadoNativeArray output) {
         this.input = input;
         this.output = output;
     }
@@ -23,17 +23,19 @@ public class SumTask implements AggregationTask {
     @Override
     public void resolve(@NotNull TaskGraph graph, @NotNull CycloneBufferType type) {
         switch (type) {
-            case FLOAT      -> graph.task(NameResolver.resolveName("sum"),
-                    SumTask::sumFloat, (FloatArray) input, (FloatArray) output);
+            case FLOAT      -> graph.task(NameResolver.resolveName("min"),
+                    MinTask::minFloat, (FloatArray) input, (FloatArray) output);
 
             default         -> throw new UnsupportedOperationException("Unsupported buffer type: %s".formatted(type));
         }
     }
 
-    public static void sumFloat(FloatArray input, @Reduce FloatArray output) {
-        output.set(0, 0);
+    public static void minFloat(FloatArray input, @Reduce FloatArray output) {
+        float min = Float.MAX_VALUE;
         for (@Parallel int i = 0; i < input.getSize(); i++)
-            output.set(0, output.get(0) + input.get(i));
+            if (input.get(i) < min)
+                min = input.get(i);
+        output.set(0, min);
     }
 
 }

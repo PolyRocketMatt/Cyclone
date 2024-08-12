@@ -6,7 +6,10 @@ import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
 import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBufferType;
 import com.github.polyrocketmatt.cyclone.api.function.TriFunction;
 import com.github.polyrocketmatt.cyclone.api.exception.CycloneException;
+import com.github.polyrocketmatt.cyclone.api.task.AggregationTask;
 import com.github.polyrocketmatt.cyclone.api.task.BufferTask;
+import com.github.polyrocketmatt.cyclone.impl.task.aggregate.MaxTask;
+import com.github.polyrocketmatt.cyclone.impl.task.aggregate.MinTask;
 import com.github.polyrocketmatt.cyclone.impl.task.aggregate.SumTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.AdditionTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.DivisionTask;
@@ -92,8 +95,11 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
     }
 
     @Override
-    public void flush() throws CycloneException {
+    public @NotNull Float reduce(@NotNull AggregationTask task) throws CycloneException {
         run();
+        appendTask(task);
+        run();
+        return getMain().get(0);
     }
 
     protected void appendTask(@NotNull BufferTask task) {
@@ -175,56 +181,68 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
 
     @Override
     public @NotNull Float sum() {
-        flush();
-        appendTask(new SumTask(getMain(), getTemp()));
-        flush();
-        return getMain().get(0);
+        return reduce(new SumTask(getMain(), getTemp()));
     }
 
     @Override
-    public @NotNull ArithmeticBuffer<Float> add(@NotNull CycloneBuffer<Float> other) {
+    public @NotNull Float average() {
+        return sum() / size;
+    }
+
+    @Override
+    public @NotNull Float max() {
+        return reduce(new MaxTask(getMain(), getTemp()));
+    }
+
+    @Override
+    public @NotNull Float min() {
+        return reduce(new MinTask(getMain(), getTemp()));
+    }
+
+    @Override
+    public @NotNull CycloneBuffer<Float> add(@NotNull CycloneBuffer<Float> other) {
         appendTask(new AdditionTask(getMain(), getTemp(), checkBufferArgument(other).getMain(), size));
         return this;
     }
 
     @Override
-    public @NotNull ArithmeticBuffer<Float> add(@NotNull Float value) {
+    public @NotNull CycloneBuffer<Float> add(@NotNull Float value) {
         appendTask(new AdditionTask(getMain(), getTemp(), constructFilled(value), size));
         return this;
     }
 
     @Override
-    public @NotNull ArithmeticBuffer<Float> sub(@NotNull CycloneBuffer<Float> other) {
+    public @NotNull CycloneBuffer<Float> sub(@NotNull CycloneBuffer<Float> other) {
         appendTask(new SubtractionTask(getMain(), getTemp(), checkBufferArgument(other).getMain(), size));
         return this;
     }
 
     @Override
-    public @NotNull ArithmeticBuffer<Float> sub(@NotNull Float value) {
+    public @NotNull CycloneBuffer<Float> sub(@NotNull Float value) {
         appendTask(new SubtractionTask(getMain(), getTemp(), constructFilled(value), size));
         return this;
     }
 
     @Override
-    public @NotNull ArithmeticBuffer<Float> mul(@NotNull CycloneBuffer<Float> other) {
+    public @NotNull CycloneBuffer<Float> mul(@NotNull CycloneBuffer<Float> other) {
         appendTask(new MultiplicationTask(getMain(), getTemp(), checkBufferArgument(other).getMain(), size));
         return this;
     }
 
     @Override
-    public @NotNull ArithmeticBuffer<Float> mul(@NotNull Float value) {
+    public @NotNull CycloneBuffer<Float> mul(@NotNull Float value) {
         appendTask(new MultiplicationTask(getMain(), getTemp(), constructFilled(value), size));
         return this;
     }
 
     @Override
-    public @NotNull ArithmeticBuffer<Float> div(@NotNull CycloneBuffer<Float> other) {
+    public @NotNull CycloneBuffer<Float> div(@NotNull CycloneBuffer<Float> other) {
         appendTask(new DivisionTask(getMain(), getTemp(), checkBufferArgument(other).getMain(), size));
         return this;
     }
 
     @Override
-    public @NotNull ArithmeticBuffer<Float> div(@NotNull Float value) {
+    public @NotNull CycloneBuffer<Float> div(@NotNull Float value) {
         if (value == 0.0f)
             throw new CycloneException("Division by zero!");
         appendTask(new DivisionTask(getMain(), getTemp(), constructFilled(value), size));

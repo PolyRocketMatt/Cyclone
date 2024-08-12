@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * @version 0.0.1
  * @author Matthias Kovacic
  */
-public interface AggregationBuffer<T> extends CycloneBuffer<T> {
+public interface AggregationBuffer<T> extends BufferBase<T> {
 
     /**
      * Calculates the sum of all elements in this buffer.
@@ -19,5 +19,11 @@ public interface AggregationBuffer<T> extends CycloneBuffer<T> {
      * @return The sum of all elements in this buffer.
      */
     @NotNull T sum();
+
+    @NotNull T average();
+
+    @NotNull T max();
+
+    @NotNull T min();
 
 }
