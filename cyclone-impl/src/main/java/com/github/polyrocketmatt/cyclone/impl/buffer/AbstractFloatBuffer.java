@@ -15,6 +15,7 @@ import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.AdditionTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.DivisionTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.IntPowerTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.MultiplicationTask;
+import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.PowerTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.SubtractionTask;
 import com.github.polyrocketmatt.cyclone.impl.task.functional.FillTask;
 import com.github.polyrocketmatt.cyclone.impl.utils.BufferUtils;
@@ -293,23 +294,25 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
 
     @Override
     public @NotNull CycloneBuffer<Float> square() {
-        appendTask(new IntPowerTask(getMain(), getTemp(), 2, size));
+        appendTask(new PowerTask(getMain(), getTemp(), 2, size));
         return this;
     }
 
     @Override
     public @NotNull CycloneBuffer<Float> sqrt() {
-        return null;
+        appendTask(new PowerTask(getMain(), getTemp(), 0.5f, size));
+        return this;
     }
 
     @Override
     public @NotNull CycloneBuffer<Float> pow(@NotNull Float value) {
-        return null;
+        appendTask(new PowerTask(getMain(), getTemp(), value, size));
+        return this;
     }
 
     @Override
     public @NotNull CycloneBuffer<Float> pow(int value) {
-        appendTask(new IntPowerTask(getMain(), getTemp(), value, size));
+        appendTask(new PowerTask(getMain(), getTemp(), value, size));
         return this;
     }
 
