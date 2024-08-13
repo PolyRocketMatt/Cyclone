@@ -187,12 +187,26 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
 
     @Override
     public @NotNull CycloneBuffer<Float> zipWith(CycloneBuffer<Float> other, BiFunction<Float, Float, Float> zipper) {
-        return null;
+        Float[] otherArray = TypeUtils.toFloatStream(checkBufferArgument(other).getMain())
+                .toArray(Float[]::new);
+        Float[] zipped = IntStream.range(0, size)
+                .parallel()
+                .mapToObj(i -> zipper.apply(getMain().get(i), otherArray[i]))
+                .toArray(Float[]::new);
+        BufferUtils.mapIntoNative(this, zipped);
+        return this;
     }
 
     @Override
     public @NotNull CycloneBuffer<Float> zipWithIndex(CycloneBuffer<Float> other, TriFunction<Float, Float, Integer, Float> zipper) {
-        return null;
+        Float[] otherArray = TypeUtils.toFloatStream(checkBufferArgument(other).getMain())
+                .toArray(Float[]::new);
+        Float[] zipped = IntStream.range(0, size)
+                .parallel()
+                .mapToObj(i -> zipper.apply(getMain().get(i), otherArray[i], i))
+                .toArray(Float[]::new);
+        BufferUtils.mapIntoNative(this, zipped);
+        return this;
     }
 
     @Override

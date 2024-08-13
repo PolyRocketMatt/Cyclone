@@ -1,6 +1,5 @@
 package com.github.polyrocketmatt.cyclone.api.function;
 
-import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -27,6 +26,6 @@ public interface TriFunction<T, S, U, R> {
      * @param u the second function argument
      * @return the function result
      */
-    R apply(T t, U u);
+    R apply(T t, S s, U u);
 
 }
