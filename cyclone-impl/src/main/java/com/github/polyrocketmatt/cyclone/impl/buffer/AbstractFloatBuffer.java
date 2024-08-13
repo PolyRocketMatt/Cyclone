@@ -13,7 +13,7 @@ import com.github.polyrocketmatt.cyclone.impl.task.aggregate.MinTask;
 import com.github.polyrocketmatt.cyclone.impl.task.aggregate.SumTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.AdditionTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.DivisionTask;
-import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.IntPowTask;
+import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.IntPowerTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.MultiplicationTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.SubtractionTask;
 import com.github.polyrocketmatt.cyclone.impl.task.functional.FillTask;
@@ -293,7 +293,7 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
 
     @Override
     public @NotNull CycloneBuffer<Float> square() {
-        appendTask(new IntPowTask(getMain(), getTemp(), 2, size));
+        appendTask(new IntPowerTask(getMain(), getTemp(), 2, size));
         return this;
     }
 
@@ -309,7 +309,7 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
 
     @Override
     public @NotNull CycloneBuffer<Float> pow(int value) {
-        appendTask(new IntPowTask(getMain(), getTemp(), value, size));
+        appendTask(new IntPowerTask(getMain(), getTemp(), value, size));
         return this;
     }
 
