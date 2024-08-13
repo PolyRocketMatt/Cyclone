@@ -77,4 +77,77 @@ public interface ArithmeticBuffer<T> extends BufferBase<T> {
      */
     @NotNull ArithmeticBuffer<T> div(@NotNull T value);
 
+    /**
+     * Calculates the square of the elements of this buffer.
+     *
+     * @return The result of calculating the square of the elements of this buffer.
+     */
+    @NotNull ArithmeticBuffer<T> square();
+
+    /**
+     * Calculates the square root of the elements of this buffer.
+     *
+     * @return The result of calculating the square root of the elements of this buffer.
+     */
+    @NotNull ArithmeticBuffer<T> sqrt();
+
+    /**
+     * Calculates the power of the elements of this buffer.
+     *
+     * @param value The value to raise the elements of this buffer to.
+     * @return The result of calculating the power of the elements of this buffer.
+     */
+    @NotNull ArithmeticBuffer<T> pow(@NotNull T value);
+
+    /**
+     * Calculates the power of the elements of this buffer.
+     *
+     * @param value The value to raise the elements of this buffer to.
+     * @return The result of calculating the power of the elements of this buffer.
+     */
+    @NotNull ArithmeticBuffer<T> pow(int value);
+
+    /**
+     * Calculates the exponential of the elements of this buffer.
+     *
+     * @return The result of calculating the exponential of the elements of this buffer.
+     */
+    @NotNull ArithmeticBuffer<T> exp();
+
+    /**
+     * Calculates the natural logarithm of the elements of this buffer.
+     *
+     * @return The result of calculating the natural logarithm of the elements of this buffer.
+     */
+    @NotNull ArithmeticBuffer<T> ln();
+
+    /**
+     * Calculates the base 10 logarithm of the elements of this buffer.
+     *
+     * @return The result of calculating the base 10 logarithm of the elements of this buffer.
+     */
+    @NotNull ArithmeticBuffer<T> log10();
+
+    /**
+     * Calculates the logarithm of the elements of this buffer.
+     *
+     * @param base The base of the logarithm.
+     * @return The result of calculating the logarithm of the elements of this buffer.
+     */
+    @NotNull ArithmeticBuffer<T> log(@NotNull T base);
+
+    /**
+     * Calculates the absolute value of the elements of this buffer.
+     *
+     * @return The result of calculating the absolute value of the elements of this buffer.
+     */
+    @NotNull ArithmeticBuffer<T> abs();
+
+    /**
+     * Calculates the negation of the elements of this buffer.
+     *
+     * @return The result of calculating the negation of the elements of this buffer.
+     */
+    @NotNull ArithmeticBuffer<T> neg();
+
 }

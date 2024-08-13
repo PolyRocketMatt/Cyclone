@@ -1,15 +1,15 @@
-package com.github.polyrocketmatt.cyclone.impl.buffer;
+package com.github.polyrocketmatt.cyclone.impl.buffer.base;
 
 import com.github.polyrocketmatt.cyclone.api.buffer.BufferBase;
 import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
 import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBufferType;
 import com.github.polyrocketmatt.cyclone.api.buffer.dimension.Buffer1D;
+import com.github.polyrocketmatt.cyclone.impl.buffer.AbstractFloatBuffer;
 import com.github.polyrocketmatt.cyclone.impl.utils.BufferUtils;
 import com.github.polyrocketmatt.cyclone.impl.utils.TypeUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
