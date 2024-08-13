@@ -1,10 +1,9 @@
-package com.github.polyrocketmatt.cyclone.impl.buffer.base;
+package com.github.polyrocketmatt.cyclone.impl.buffer;
 
 import com.github.polyrocketmatt.cyclone.api.buffer.BufferBase;
 import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBuffer;
 import com.github.polyrocketmatt.cyclone.api.buffer.CycloneBufferType;
 import com.github.polyrocketmatt.cyclone.api.buffer.dimension.Buffer1D;
-import com.github.polyrocketmatt.cyclone.impl.buffer.AbstractFloatBuffer;
 import com.github.polyrocketmatt.cyclone.impl.utils.BufferUtils;
 import com.github.polyrocketmatt.cyclone.impl.utils.TypeUtils;
 import org.jetbrains.annotations.NotNull;

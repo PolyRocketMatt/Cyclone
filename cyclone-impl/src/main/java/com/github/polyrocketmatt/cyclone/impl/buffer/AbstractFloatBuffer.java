@@ -13,6 +13,7 @@ import com.github.polyrocketmatt.cyclone.impl.task.aggregate.MinTask;
 import com.github.polyrocketmatt.cyclone.impl.task.aggregate.SumTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.AdditionTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.DivisionTask;
+import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.IntPowTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.MultiplicationTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.SubtractionTask;
 import com.github.polyrocketmatt.cyclone.impl.task.functional.FillTask;
@@ -290,4 +291,55 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
         return this;
     }
 
+    @Override
+    public @NotNull CycloneBuffer<Float> square() {
+        appendTask(new IntPowTask(getMain(), getTemp(), 2, size));
+        return this;
+    }
+
+    @Override
+    public @NotNull CycloneBuffer<Float> sqrt() {
+        return null;
+    }
+
+    @Override
+    public @NotNull CycloneBuffer<Float> pow(@NotNull Float value) {
+        return null;
+    }
+
+    @Override
+    public @NotNull CycloneBuffer<Float> pow(int value) {
+        appendTask(new IntPowTask(getMain(), getTemp(), value, size));
+        return this;
+    }
+
+    @Override
+    public @NotNull CycloneBuffer<Float> exp() {
+        return null;
+    }
+
+    @Override
+    public @NotNull CycloneBuffer<Float> ln() {
+        return null;
+    }
+
+    @Override
+    public @NotNull CycloneBuffer<Float> log10() {
+        return null;
+    }
+
+    @Override
+    public @NotNull CycloneBuffer<Float> log(@NotNull Float base) {
+        return null;
+    }
+
+    @Override
+    public @NotNull CycloneBuffer<Float> abs() {
+        return null;
+    }
+
+    @Override
+    public @NotNull CycloneBuffer<Float> neg() {
+        return null;
+    }
 }
