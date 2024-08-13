@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
@@ -212,6 +211,12 @@ public abstract class AbstractFloatBuffer implements CycloneBuffer<Float>,
     @Override
     public @NotNull CycloneBuffer<Float> fill(Float value) {
         appendTask(new FillTask(getMain(), getTemp(), value, size));
+        return this;
+    }
+
+    @Override
+    public @NotNull CycloneBuffer<Float> random() {
+        map(_ -> (float) Math.random());
         return this;
     }
 

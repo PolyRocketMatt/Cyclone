@@ -124,6 +124,13 @@ public interface CycloneBuffer<T> extends ArithmeticBuffer<T>, AggregationBuffer
     @NotNull CycloneBuffer<T> fill(T value);
 
     /**
+     * Fill the buffer with random values between 0 and 1.
+     *
+     * @return The buffer filled with random values between 0 and 1.
+     */
+    @NotNull CycloneBuffer<T> random();
+
+    /**
      * Prints the information and contents of the buffer.
      *
      * @return The information and contents of the buffer.
