@@ -8,7 +8,7 @@ import com.github.polyrocketmatt.cyclone.impl.task.CycloneTaskGraph;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticAbsTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticAcosTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticAcoshTask;
-import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticAdditionTask;
+import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticAddTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticAsinTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticAsinhTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticAtan2Task;
@@ -19,22 +19,22 @@ import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticCosTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticCoshTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticCotTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticCscTask;
-import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticDivisionTask;
+import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticDivTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticExpTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticFloorTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticLog10Task;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticLog2Task;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticLogTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticLogXTask;
-import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticModuloTask;
+import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticModTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticNegateTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticPowerTask;
-import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticMultiplicationTask;
+import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticMultTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticRootTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticSecTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticSinTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticSinhTask;
-import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticSubtractionTask;
+import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticSubTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticTanTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticTanhTask;
 import com.github.polyrocketmatt.cyclone.impl.task.functional.FunctionalFillTask;
@@ -114,27 +114,27 @@ public abstract class LinearizedFloatTensor implements Tensor<Float> {
 
     @Override
     public @NotNull LinearizedFloatTensor add(@NotNull Float value) {
-        return queueTask(new ArithmeticAdditionTask(buffer, value, size));
+        return queueTask(new ArithmeticAddTask(buffer, value, size));
     }
 
     @Override
     public @NotNull LinearizedFloatTensor subtract(@NotNull Float value) {
-        return queueTask(new ArithmeticSubtractionTask(buffer, value, size));
+        return queueTask(new ArithmeticSubTask(buffer, value, size));
     }
 
     @Override
     public @NotNull LinearizedFloatTensor multiply(@NotNull Float value) {
-        return queueTask(new ArithmeticMultiplicationTask(buffer, value, size));
+        return queueTask(new ArithmeticMultTask(buffer, value, size));
     }
 
     @Override
     public @NotNull LinearizedFloatTensor divide(@NotNull Float value) {
-        return queueTask(new ArithmeticDivisionTask(buffer, value, size));
+        return queueTask(new ArithmeticDivTask(buffer, value, size));
     }
 
     @Override
     public @NotNull Tensor<Float> modulo(@NotNull Float value) {
-        return queueTask(new ArithmeticModuloTask(buffer, value, size));
+        return queueTask(new ArithmeticModTask(buffer, value, size));
     }
 
     @Override

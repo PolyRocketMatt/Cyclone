@@ -9,23 +9,25 @@ import uk.ac.manchester.tornado.api.TaskGraph;
 import uk.ac.manchester.tornado.api.types.arrays.FloatArray;
 import uk.ac.manchester.tornado.api.types.arrays.TornadoNativeArray;
 
-public class ArithmeticModuloTask extends ParallelTensorTask {
+public class ArithmeticDivTask extends ParallelTensorTask {
 
     private float value;
     private final int size;
     private final String id;
 
-    public ArithmeticModuloTask(@NotNull TornadoNativeArray buffer, float value, int size) {
+    public ArithmeticDivTask(@NotNull TornadoNativeArray buffer, float value, int size) {
         super(buffer);
+        if (value == 0.0f)
+            throw new IllegalArgumentException("Division by zero is not allowed");
         this.value = value;
         this.size = size;
-        this.id = "mod_%s".formatted(TaskUtils.randomIdentifier(8));
+        this.id = "div_%s".formatted(TaskUtils.randomIdentifier(8));
     }
 
     @Override
     public void resolve(@NotNull TaskGraph graph, @NotNull TensorType type) {
         switch (type) {
-            case FLOAT      -> graph.task(id, ArithmeticKernels::moduloFloat, (FloatArray) buffer, value, size);
+            case FLOAT      -> graph.task(id, ArithmeticKernels::divideFloat, (FloatArray) buffer, value, size);
             default         -> throw new UnsupportedOperationException("Unsupported buffer type: %s".formatted(type));
         }
     }

@@ -9,13 +9,13 @@ import uk.ac.manchester.tornado.api.TaskGraph;
 import uk.ac.manchester.tornado.api.types.arrays.FloatArray;
 import uk.ac.manchester.tornado.api.types.arrays.TornadoNativeArray;
 
-public class ArithmeticSubtractionTask extends ParallelTensorTask {
+public class ArithmeticSubTask extends ParallelTensorTask {
 
     private float value;
     private final int size;
     private final String id;
 
-    public ArithmeticSubtractionTask(@NotNull TornadoNativeArray buffer, float value, int size) {
+    public ArithmeticSubTask(@NotNull TornadoNativeArray buffer, float value, int size) {
         super(buffer);
         this.value = value;
         this.size = size;
