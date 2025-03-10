@@ -1,10 +1,10 @@
 package com.github.polyrocketmatt.cyclone.impl.task.sequential;
 
-import com.github.polyrocketmatt.cyclone.api.Tensor;
+import com.github.polyrocketmatt.cyclone.api.tensor.Tensor;
 import com.github.polyrocketmatt.cyclone.api.TensorType;
 import com.github.polyrocketmatt.cyclone.impl.kernel.SequentialKernels;
 import com.github.polyrocketmatt.cyclone.impl.task.SequentialTensorTask;
-import com.github.polyrocketmatt.cyclone.impl.tensor.FloatTensor;
+import com.github.polyrocketmatt.cyclone.impl.tensor.LinearizedFloatTensor;
 import com.github.polyrocketmatt.cyclone.impl.utils.TypeUtils;
 import org.jetbrains.annotations.NotNull;
 import uk.ac.manchester.tornado.api.types.arrays.FloatArray;
@@ -25,18 +25,18 @@ public class SequentialMapTask extends SequentialTensorTask {
     @Override
     public void run(@NotNull Tensor<?> tensor, @NotNull TensorType type) {
         switch (type) {
-            case FLOAT      -> new HomogeneousFloatMapTask((FloatTensor) tensor, buffer, (Function<Float, Float>) mapper).run();
+            case FLOAT      -> new HomogeneousFloatMapTask((LinearizedFloatTensor) tensor, buffer, (Function<Float, Float>) mapper).run();
             default         -> throw new UnsupportedOperationException("Unsupported buffer type: %s".formatted(type));
         }
     }
 
     private static class HomogeneousFloatMapTask {
 
-        private final FloatTensor tensor;
+        private final LinearizedFloatTensor tensor;
         private final FloatArray buffer;
         private final Function<Float, Float> mapper;
 
-        public HomogeneousFloatMapTask(@NotNull FloatTensor tensor, @NotNull TornadoNativeArray buffer,
+        public HomogeneousFloatMapTask(@NotNull LinearizedFloatTensor tensor, @NotNull TornadoNativeArray buffer,
                                        @NotNull Function<Float, Float> mapper) {
             this.tensor = tensor;
             this.buffer = (FloatArray) buffer;

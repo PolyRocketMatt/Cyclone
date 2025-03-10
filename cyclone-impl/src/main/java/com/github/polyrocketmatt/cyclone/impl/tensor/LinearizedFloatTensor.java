@@ -2,7 +2,7 @@ package com.github.polyrocketmatt.cyclone.impl.tensor;
 
 import com.github.polyrocketmatt.cyclone.api.TensorTask;
 import com.github.polyrocketmatt.cyclone.api.TensorType;
-import com.github.polyrocketmatt.cyclone.api.Tensor;
+import com.github.polyrocketmatt.cyclone.api.tensor.Tensor;
 import com.github.polyrocketmatt.cyclone.impl.task.CycloneTaskGraph;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticAbsTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticAcosTask;
@@ -50,7 +50,7 @@ import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class FloatTensor implements Tensor<Float> {
+public abstract class LinearizedFloatTensor implements Tensor<Float> {
 
     protected final int size;
     protected final FloatArray buffer;
@@ -58,7 +58,7 @@ public class FloatTensor implements Tensor<Float> {
 
     private final Random rng;
 
-    protected FloatTensor(int size, float value) {
+    protected LinearizedFloatTensor(int size, float value) {
         this.size = size;
         this.buffer = new FloatArray(size);
         this.tasks = new ArrayList<>();
@@ -68,7 +68,7 @@ public class FloatTensor implements Tensor<Float> {
         fill(value);
     }
 
-    protected @NotNull FloatTensor queueTask(@NotNull TensorTask task) {
+    protected @NotNull LinearizedFloatTensor queueTask(@NotNull TensorTask task) {
         tasks.add(task);
         return this;
     }
@@ -103,29 +103,29 @@ public class FloatTensor implements Tensor<Float> {
     }
 
     @Override
-    public FloatTensor dispatch() {
+    public LinearizedFloatTensor dispatch() {
         new CycloneTaskGraph<>(this, tasks).dispatchInternalTaskChain();
         tasks.clear();
         return this;
     }
 
     @Override
-    public @NotNull FloatTensor add(@NotNull Float value) {
+    public @NotNull LinearizedFloatTensor add(@NotNull Float value) {
         return queueTask(new ArithmeticAdditionTask(buffer, value, size));
     }
 
     @Override
-    public @NotNull FloatTensor subtract(@NotNull Float value) {
+    public @NotNull LinearizedFloatTensor subtract(@NotNull Float value) {
         return queueTask(new ArithmeticSubtractionTask(buffer, value, size));
     }
 
     @Override
-    public @NotNull FloatTensor multiply(@NotNull Float value) {
+    public @NotNull LinearizedFloatTensor multiply(@NotNull Float value) {
         return queueTask(new ArithmeticMultiplicationTask(buffer, value, size));
     }
 
     @Override
-    public @NotNull FloatTensor divide(@NotNull Float value) {
+    public @NotNull LinearizedFloatTensor divide(@NotNull Float value) {
         return queueTask(new ArithmeticDivisionTask(buffer, value, size));
     }
 
@@ -135,172 +135,172 @@ public class FloatTensor implements Tensor<Float> {
     }
 
     @Override
-    public @NotNull FloatTensor power(@NotNull Float value) {
+    public @NotNull LinearizedFloatTensor power(@NotNull Float value) {
         return queueTask(new ArithmeticPowerTask(buffer, value, size));
     }
 
     @Override
-    public @NotNull FloatTensor sqrt() {
+    public @NotNull LinearizedFloatTensor sqrt() {
         return queueTask(new ArithmeticRootTask(buffer, 2.0f, size));
     }
 
     @Override
-    public @NotNull FloatTensor cbrt() {
+    public @NotNull LinearizedFloatTensor cbrt() {
         return queueTask(new ArithmeticRootTask(buffer, 3.0f, size));
     }
 
     @Override
-    public @NotNull FloatTensor root(@NotNull Float value) {
+    public @NotNull LinearizedFloatTensor root(@NotNull Float value) {
         return queueTask(new ArithmeticRootTask(buffer, value, size));
     }
 
     @Override
-    public @NotNull FloatTensor exp() {
+    public @NotNull LinearizedFloatTensor exp() {
         return queueTask(new ArithmeticExpTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor log() {
+    public @NotNull LinearizedFloatTensor log() {
         return queueTask(new ArithmeticLogTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor log2() {
+    public @NotNull LinearizedFloatTensor log2() {
         return queueTask(new ArithmeticLog2Task(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor log10() {
+    public @NotNull LinearizedFloatTensor log10() {
         return queueTask(new ArithmeticLog10Task(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor logx(@NotNull Float value) {
+    public @NotNull LinearizedFloatTensor logx(@NotNull Float value) {
         return queueTask(new ArithmeticLogXTask(buffer, value, size));
     }
 
     @Override
-    public @NotNull FloatTensor sin() {
+    public @NotNull LinearizedFloatTensor sin() {
         return queueTask(new ArithmeticSinTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor cos() {
+    public @NotNull LinearizedFloatTensor cos() {
         return queueTask(new ArithmeticCosTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor tan() {
+    public @NotNull LinearizedFloatTensor tan() {
         return queueTask(new ArithmeticTanTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor csc() {
+    public @NotNull LinearizedFloatTensor csc() {
         return queueTask(new ArithmeticCscTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor sec() {
+    public @NotNull LinearizedFloatTensor sec() {
         return queueTask(new ArithmeticSecTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor cot() {
+    public @NotNull LinearizedFloatTensor cot() {
         return queueTask(new ArithmeticCotTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor asin() {
+    public @NotNull LinearizedFloatTensor asin() {
         return queueTask(new ArithmeticAsinTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor acos() {
+    public @NotNull LinearizedFloatTensor acos() {
         return queueTask(new ArithmeticAcosTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor atan() {
+    public @NotNull LinearizedFloatTensor atan() {
         return queueTask(new ArithmeticAtanTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor atan2(@NotNull Float value) {
+    public @NotNull LinearizedFloatTensor atan2(@NotNull Float value) {
         return queueTask(new ArithmeticAtan2Task(buffer, value, size));
     }
 
     @Override
-    public @NotNull FloatTensor sinh() {
+    public @NotNull LinearizedFloatTensor sinh() {
         return queueTask(new ArithmeticSinhTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor cosh() {
+    public @NotNull LinearizedFloatTensor cosh() {
         return queueTask(new ArithmeticCoshTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor tanh() {
+    public @NotNull LinearizedFloatTensor tanh() {
         return queueTask(new ArithmeticTanhTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor asinh() {
+    public @NotNull LinearizedFloatTensor asinh() {
         return queueTask(new ArithmeticAsinhTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor acosh() {
+    public @NotNull LinearizedFloatTensor acosh() {
         return queueTask(new ArithmeticAcoshTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor atanh() {
+    public @NotNull LinearizedFloatTensor atanh() {
         return queueTask(new ArithmeticAtanhTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor negate() {
+    public @NotNull LinearizedFloatTensor negate() {
         return queueTask(new ArithmeticNegateTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor floor() {
+    public @NotNull LinearizedFloatTensor floor() {
         return queueTask(new ArithmeticFloorTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor ceil() {
+    public @NotNull LinearizedFloatTensor ceil() {
         return queueTask(new ArithmeticCeilTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor abs() {
+    public @NotNull LinearizedFloatTensor abs() {
         return queueTask(new ArithmeticAbsTask(buffer, size));
     }
 
     @Override
-    public @NotNull FloatTensor fill(@NotNull Float value) {
+    public @NotNull LinearizedFloatTensor fill(@NotNull Float value) {
         return queueTask(new FunctionalFillTask(buffer, value, size));
     }
 
     @Override
-    public @NotNull FloatTensor random() {
+    public @NotNull LinearizedFloatTensor random() {
         return queueTask(new FunctionalRandomTask(buffer, rng.nextInt(), size));
     }
 
     @Override
-    public @NotNull FloatTensor random(int seed) {
+    public @NotNull LinearizedFloatTensor random(int seed) {
         return queueTask(new FunctionalRandomTask(buffer, seed, size));
     }
 
     @Override
-    public @NotNull FloatTensor map(Function<Float, Float> mapper) {
+    public @NotNull LinearizedFloatTensor map(Function<Float, Float> mapper) {
         return queueTask(new SequentialMapTask(buffer, mapper));
     }
 
     @Override
-    public @NotNull FloatTensor mapIndexed(BiFunction<Integer, Float, Float> mapper) {
+    public @NotNull LinearizedFloatTensor mapIndexed(BiFunction<Integer, Float, Float> mapper) {
         return queueTask(new SequentialMapIndexedTask(buffer, mapper));
     }
 

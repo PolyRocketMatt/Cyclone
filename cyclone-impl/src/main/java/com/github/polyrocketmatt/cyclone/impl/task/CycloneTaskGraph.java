@@ -1,6 +1,6 @@
 package com.github.polyrocketmatt.cyclone.impl.task;
 
-import com.github.polyrocketmatt.cyclone.api.Tensor;
+import com.github.polyrocketmatt.cyclone.api.tensor.Tensor;
 import com.github.polyrocketmatt.cyclone.api.TensorTask;
 import com.github.polyrocketmatt.cyclone.api.TensorType;
 import com.github.polyrocketmatt.cyclone.impl.Cyclone;

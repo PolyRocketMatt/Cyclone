@@ -1,11 +1,8 @@
 package com.github.polyrocketmatt.cyclone.impl.utils;
 
-import com.github.polyrocketmatt.cyclone.api.Tensor;
-import uk.ac.manchester.tornado.api.types.arrays.FloatArray;
+import com.github.polyrocketmatt.cyclone.api.tensor.Tensor;
 
-import java.util.Arrays;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class TensorUtils {
 

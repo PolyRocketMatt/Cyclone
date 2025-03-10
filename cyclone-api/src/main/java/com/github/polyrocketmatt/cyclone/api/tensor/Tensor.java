@@ -1,5 +1,6 @@
-package com.github.polyrocketmatt.cyclone.api;
+package com.github.polyrocketmatt.cyclone.api.tensor;
 
+import com.github.polyrocketmatt.cyclone.api.TensorType;
 import org.jetbrains.annotations.NotNull;
 import uk.ac.manchester.tornado.api.types.arrays.TornadoNativeArray;
 
