@@ -104,4 +104,12 @@ public interface Tensor<T> {
 
     @NotNull Tensor<T> zipWithIndexed(@NotNull Tensor<T> other, @NotNull TriFunction<Integer, T, T, T> zipper);
 
+    @NotNull Tensor<T> add(@NotNull Tensor<T> other);
+
+    @NotNull Tensor<T> subtract(@NotNull Tensor<T> other);
+
+    @NotNull Tensor<T> multiply(@NotNull Tensor<T> other);
+
+    @NotNull Tensor<T> divide(@NotNull Tensor<T> other);
+
 }

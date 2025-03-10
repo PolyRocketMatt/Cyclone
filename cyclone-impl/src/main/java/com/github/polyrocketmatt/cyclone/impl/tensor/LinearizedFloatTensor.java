@@ -29,7 +29,7 @@ import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticLogXTask
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticModTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticNegateTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticPowerTask;
-import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticMultTask;
+import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticMulTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticRootTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticSecTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticSinTask;
@@ -37,6 +37,10 @@ import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticSinhTask
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticSubTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticTanTask;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticTanhTask;
+import com.github.polyrocketmatt.cyclone.impl.task.element.ElementAddTask;
+import com.github.polyrocketmatt.cyclone.impl.task.element.ElementDivTask;
+import com.github.polyrocketmatt.cyclone.impl.task.element.ElementMulTask;
+import com.github.polyrocketmatt.cyclone.impl.task.element.ElementSubTask;
 import com.github.polyrocketmatt.cyclone.impl.task.functional.FunctionalFillTask;
 import com.github.polyrocketmatt.cyclone.impl.task.functional.FunctionalRandomTask;
 import com.github.polyrocketmatt.cyclone.impl.task.sequential.SequentialMapIndexedTask;
@@ -74,6 +78,14 @@ public abstract class LinearizedFloatTensor implements Tensor<Float> {
     protected @NotNull LinearizedFloatTensor queueTask(@NotNull TensorTask task) {
         tasks.add(task);
         return this;
+    }
+
+    protected @NotNull LinearizedFloatTensor checkArgumentTensor(@NotNull Tensor<Float> other) {
+        if (!(other instanceof LinearizedFloatTensor linearizedFloatTensor))
+            throw new IllegalArgumentException("Invalid tensor type: %s".formatted(other.getClass().getSimpleName()));
+        if (this.size != linearizedFloatTensor.size)
+            throw new IllegalArgumentException("Tensor sizes do not match: %d != %d".formatted(size, linearizedFloatTensor.size));
+        return linearizedFloatTensor;
     }
 
     @Override
@@ -124,7 +136,7 @@ public abstract class LinearizedFloatTensor implements Tensor<Float> {
 
     @Override
     public @NotNull LinearizedFloatTensor multiply(@NotNull Float value) {
-        return queueTask(new ArithmeticMultTask(buffer, value, size));
+        return queueTask(new ArithmeticMulTask(buffer, value, size));
     }
 
     @Override
@@ -309,16 +321,32 @@ public abstract class LinearizedFloatTensor implements Tensor<Float> {
 
     @Override
     public @NotNull LinearizedFloatTensor zipWith(@NotNull Tensor<Float> other, @NotNull BiFunction<Float, Float, Float> zipper) {
-        if (!(other instanceof LinearizedFloatTensor linearizedOtherTensor))
-            throw new IllegalArgumentException("Invalid tensor type: %s".formatted(other.getClass().getSimpleName()));
-        return queueTask(new SequentialZipWithTask(buffer, linearizedOtherTensor, zipper));
+        return queueTask(new SequentialZipWithTask(buffer, checkArgumentTensor(other), zipper));
     }
 
     @Override
-    public @NotNull Tensor<Float> zipWithIndexed(@NotNull Tensor<Float> other, @NotNull TriFunction<Integer, Float, Float, Float> zipper) {
-        if (!(other instanceof LinearizedFloatTensor linearizedOtherTensor))
-            throw new IllegalArgumentException("Invalid tensor type: %s".formatted(other.getClass().getSimpleName()));
-        return queueTask(new SequentialZipWithIndexedTask(buffer, linearizedOtherTensor, zipper));
+    public @NotNull LinearizedFloatTensor zipWithIndexed(@NotNull Tensor<Float> other, @NotNull TriFunction<Integer, Float, Float, Float> zipper) {
+        return queueTask(new SequentialZipWithIndexedTask(buffer, checkArgumentTensor(other), zipper));
+    }
+
+    @Override
+    public @NotNull LinearizedFloatTensor add(@NotNull Tensor<Float> other) {
+        return queueTask(new ElementAddTask(buffer, checkArgumentTensor(other).buffer, size));
+    }
+
+    @Override
+    public @NotNull LinearizedFloatTensor subtract(@NotNull Tensor<Float> other) {
+        return queueTask(new ElementSubTask(buffer, checkArgumentTensor(other).buffer, size));
+    }
+
+    @Override
+    public @NotNull LinearizedFloatTensor multiply(@NotNull Tensor<Float> other) {
+        return queueTask(new ElementMulTask(buffer, checkArgumentTensor(other).buffer, size));
+    }
+
+    @Override
+    public @NotNull LinearizedFloatTensor divide(@NotNull Tensor<Float> other) {
+        return queueTask(new ElementDivTask(buffer, checkArgumentTensor(other).buffer, size));
     }
 
     @Override
