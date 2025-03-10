@@ -1,0 +1,62 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+group = 'com.github.polyrocketmatt.cyclone'
+version = '1.0-SNAPSHOT'
+
+sourceCompatibility = '21'
+targetCompatibility = '21'
+
+repositories {
+    mavenCentral()
+
+    // TornadoVM repository
+    maven {
+        url 'https://raw.githubusercontent.com/beehive-lab/tornado/maven-tornadovm'
+    }
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    implementation 'org.jetbrains:annotations:24.0.0'
+
+    // TornadoVM dependencies
+    implementation 'tornado:tornado-api:1.0.10'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            groupId = 'com.github.polyrocketmatt.cyclone'
+            artifactId = 'cyclone-api'
+            version = '1.0-SNAPSHOT'
+        }
+    }
+
+    repositories {
+        mavenLocal()
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ["--enable-preview"]
+}
+
+tasks.named('jar') {
+    manifest {
+        attributes(
+                'API-Title': project.name,
+                'API-Version': project.version
+        )
+    }
+}

@@ -1,0 +1,44 @@
+package com.github.polyrocketmatt.cyclone.impl.utils;
+
+import com.github.polyrocketmatt.cyclone.api.Tensor;
+import uk.ac.manchester.tornado.api.types.arrays.FloatArray;
+
+import java.util.Arrays;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+public class TensorUtils {
+
+    public static <T> void mapIntoNative(Tensor<T> buffer, T[] values) {
+        IntStream.range(0, values.length).forEach(i -> buffer.set(i, values[i]));
+    }
+
+    public static <T> String buildBuffer1D(Tensor<T> buffer) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("| ");
+
+        int threshold = 3;
+        int size = buffer.getSize();
+        boolean skip = size > threshold * 2;
+        for (int i = 0; i < size; i++) {
+            if (skip && (i > (threshold - 1) && i < size - threshold)) {
+                if (i == threshold) {
+                    builder.append("... ");
+                }
+
+                // Update the index to the last element
+                if (i < size - threshold)
+                    i = size - threshold - 1;
+
+                continue;
+            }
+
+            builder.append(buffer.get(i));
+            builder.append(" ");
+        }
+
+        builder.append("|");
+        return builder.toString();
+    }
+
+}
