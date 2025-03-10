@@ -1,6 +1,7 @@
 package com.github.polyrocketmatt.cyclone.api.tensor;
 
 import com.github.polyrocketmatt.cyclone.api.TensorType;
+import com.github.polyrocketmatt.cyclone.api.TriFunction;
 import org.jetbrains.annotations.NotNull;
 import uk.ac.manchester.tornado.api.types.arrays.TornadoNativeArray;
 
@@ -95,8 +96,12 @@ public interface Tensor<T> {
 
     @NotNull Tensor<T> random(int seed);
 
-    @NotNull Tensor<T> map(Function<T, T> mapper);
+    @NotNull Tensor<T> map(@NotNull Function<T, T> mapper);
 
-    @NotNull Tensor<T> mapIndexed(BiFunction<Integer, T, T> mapper);
+    @NotNull Tensor<T> mapIndexed(@NotNull BiFunction<Integer, T, T> mapper);
+
+    @NotNull Tensor<T> zipWith(@NotNull Tensor<T> other, @NotNull BiFunction<T, T, T> zipper);
+
+    @NotNull Tensor<T> zipWithIndexed(@NotNull Tensor<T> other, @NotNull TriFunction<Integer, T, T, T> zipper);
 
 }

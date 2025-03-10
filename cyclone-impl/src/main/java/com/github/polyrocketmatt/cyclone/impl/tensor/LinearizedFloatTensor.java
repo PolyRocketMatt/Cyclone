@@ -2,6 +2,7 @@ package com.github.polyrocketmatt.cyclone.impl.tensor;
 
 import com.github.polyrocketmatt.cyclone.api.TensorTask;
 import com.github.polyrocketmatt.cyclone.api.TensorType;
+import com.github.polyrocketmatt.cyclone.api.TriFunction;
 import com.github.polyrocketmatt.cyclone.api.tensor.Tensor;
 import com.github.polyrocketmatt.cyclone.impl.task.CycloneTaskGraph;
 import com.github.polyrocketmatt.cyclone.impl.task.arithmetic.ArithmeticAbsTask;
@@ -40,6 +41,8 @@ import com.github.polyrocketmatt.cyclone.impl.task.functional.FunctionalFillTask
 import com.github.polyrocketmatt.cyclone.impl.task.functional.FunctionalRandomTask;
 import com.github.polyrocketmatt.cyclone.impl.task.sequential.SequentialMapIndexedTask;
 import com.github.polyrocketmatt.cyclone.impl.task.sequential.SequentialMapTask;
+import com.github.polyrocketmatt.cyclone.impl.task.sequential.SequentialZipWithIndexedTask;
+import com.github.polyrocketmatt.cyclone.impl.task.sequential.SequentialZipWithTask;
 import com.github.polyrocketmatt.cyclone.impl.utils.TensorUtils;
 import org.jetbrains.annotations.NotNull;
 import uk.ac.manchester.tornado.api.types.arrays.FloatArray;
@@ -103,7 +106,7 @@ public abstract class LinearizedFloatTensor implements Tensor<Float> {
     }
 
     @Override
-    public LinearizedFloatTensor dispatch() {
+    public @NotNull LinearizedFloatTensor dispatch() {
         new CycloneTaskGraph<>(this, tasks).dispatchInternalTaskChain();
         tasks.clear();
         return this;
@@ -295,45 +298,28 @@ public abstract class LinearizedFloatTensor implements Tensor<Float> {
     }
 
     @Override
-    public @NotNull LinearizedFloatTensor map(Function<Float, Float> mapper) {
+    public @NotNull LinearizedFloatTensor map(@NotNull Function<Float, Float> mapper) {
         return queueTask(new SequentialMapTask(buffer, mapper));
     }
 
     @Override
-    public @NotNull LinearizedFloatTensor mapIndexed(BiFunction<Integer, Float, Float> mapper) {
+    public @NotNull LinearizedFloatTensor mapIndexed(@NotNull BiFunction<Integer, Float, Float> mapper) {
         return queueTask(new SequentialMapIndexedTask(buffer, mapper));
     }
 
-    /*
     @Override
-    public @NotNull FloatTensor zipWith(FloatTensor other, BiFunction<Float, Float, Float> zipper) {
-        Float[] otherArray = TypeUtils.toFloatStream(checkBufferArgument(other).getMain())
-                .toArray(Float[]::new);
-        Float[] zipped = IntStream.range(0, size)
-                .parallel()
-                .mapToObj(i -> zipper.apply(buffer.get(i), otherArray[i]))
-                .toArray(Float[]::new);
-        TensorUtils.mapIntoNative(this, zipped);
-        return this;
+    public @NotNull LinearizedFloatTensor zipWith(@NotNull Tensor<Float> other, @NotNull BiFunction<Float, Float, Float> zipper) {
+        if (!(other instanceof LinearizedFloatTensor linearizedOtherTensor))
+            throw new IllegalArgumentException("Invalid tensor type: %s".formatted(other.getClass().getSimpleName()));
+        return queueTask(new SequentialZipWithTask(buffer, linearizedOtherTensor, zipper));
     }
 
     @Override
-    public @NotNull FloatTensor zipWithIndex(FloatTensor other, TriFunction<Float, Float, Integer, Float> zipper) {
-        Float[] otherArray = TypeUtils.toFloatStream(checkBufferArgument(other).getMain())
-                .toArray(Float[]::new);
-        Float[] zipped = IntStream.range(0, size)
-                .parallel()
-                .mapToObj(i -> zipper.apply(buffer.get(i), otherArray[i], i))
-                .toArray(Float[]::new);
-        TensorUtils.mapIntoNative(this, zipped);
-        return this;
+    public @NotNull Tensor<Float> zipWithIndexed(@NotNull Tensor<Float> other, @NotNull TriFunction<Integer, Float, Float, Float> zipper) {
+        if (!(other instanceof LinearizedFloatTensor linearizedOtherTensor))
+            throw new IllegalArgumentException("Invalid tensor type: %s".formatted(other.getClass().getSimpleName()));
+        return queueTask(new SequentialZipWithIndexedTask(buffer, linearizedOtherTensor, zipper));
     }
-
-    public @Nullable TornadoProfilerResult getProfilerResult() {
-        return profilerResult;
-    }
-
-     */
 
     @Override
     public @NotNull String toString() {
