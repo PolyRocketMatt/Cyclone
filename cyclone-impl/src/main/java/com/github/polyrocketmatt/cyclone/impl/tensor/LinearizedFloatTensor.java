@@ -145,7 +145,7 @@ public abstract class LinearizedFloatTensor implements Tensor<Float> {
     }
 
     @Override
-    public @NotNull Tensor<Float> modulo(@NotNull Float value) {
+    public @NotNull LinearizedFloatTensor modulo(@NotNull Float value) {
         return queueTask(new ArithmeticModTask(buffer, value, size));
     }
 
